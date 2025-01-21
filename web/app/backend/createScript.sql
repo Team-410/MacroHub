@@ -1,11 +1,11 @@
 CREATE TABLE user (
-    userid INT PRIMARY KEY,
+    userid INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL
+    role VARCHAR(50) NOT NULL DEFAULT 'user'
 );
 CREATE TABLE macro (
-    macroid INT PRIMARY KEY,
+    macroid INT PRIMARY KEY AUTO_INCREMENT,
     macroname VARCHAR(255) NOT NULL,
     macrodescription VARCHAR(255) NOT NULL,
     app VARCHAR(255) NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE macro (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE personal_list (
-    listid INT PRIMARY KEY,
+    listid INT PRIMARY KEY AUTO_INCREMENT,
     userid INT,
     macroid INT,
     activation_key VARCHAR(255),
@@ -23,7 +23,7 @@ CREATE TABLE personal_list (
     FOREIGN KEY (macroid) REFERENCES macro(macroid)
 );
 CREATE TABLE vote (
-    voteid INT PRIMARY KEY,
+    voteid INT PRIMARY KEY AUTO_INCREMENT,
     macroid INT,
     userid INT,
     vote BOOLEAN NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE vote (
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
 CREATE TABLE comment (
-    commentid INT PRIMARY KEY,
+    commentid INT PRIMARY KEY AUTO_INCREMENT,
     macroid INT,
     fullname VARCHAR(255) NOT NULL,
     comment TEXT NOT NULL,
