@@ -4,10 +4,7 @@ import './App.css';
 import Nav from './components/nav';
 import Login from './pages/login';
 import Register from './pages/register';
-
-function Home() {
-  return <h2>Home Page</h2>;
-}
+import Home from './pages/home';
 
 
 function About() {
