@@ -6,9 +6,11 @@ CREATE TABLE user (
 );
 CREATE TABLE macro (
     macroid INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    macroname VARCHAR(255) NOT NULL,
+    macrodescription VARCHAR(255) NOT NULL,
+    app VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL,
-    subcategory VARCHAR(255) NOT NULL,
+    macrotype VARCHAR(255) NOT NULL,
     macro TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -20,10 +22,11 @@ CREATE TABLE personal_list (
     FOREIGN KEY (userid) REFERENCES user(userid),
     FOREIGN KEY (macroid) REFERENCES macro(macroid)
 );
-CREATE TABLE likes (
-    likeid INT PRIMARY KEY,
+CREATE TABLE vote (
+    voteid INT PRIMARY KEY,
     macroid INT,
     userid INT,
+    vote BOOLEAN NOT NULL,
     FOREIGN KEY (macroid) REFERENCES macro(macroid),
     FOREIGN KEY (userid) REFERENCES user(userid)
 );
@@ -35,10 +38,11 @@ CREATE TABLE comment (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (macroid) REFERENCES macro(macroid)
 );
+CREATE INDEX idx_user_email ON user (email);
+CREATE INDEX idx_macro_name ON macro (macroname);
+CREATE INDEX idx_personal_list_userid ON personal_list (userid);
+CREATE INDEX idx_personal_list_macroid ON personal_list (macroid);
+CREATE INDEX idx_vote_macroid_userid ON vote (macroid, userid);
+CREATE INDEX idx_comment_macroid ON comment (macroid);
+CREATE INDEX idx_comment_timestamp ON comment (timestamp);
 
-CREATE INDEX idx_user_email ON user(email);
-CREATE INDEX idx_macro_category ON macro(category);
-CREATE INDEX idx_macro_subcategory ON macro(subcategory);
-CREATE INDEX idx_likes_macroid ON likes(macroid);
-CREATE INDEX idx_likes_userid ON likes(userid);
-CREATE INDEX idx_comment_macroid ON comment(macroid);
