@@ -1,0 +1,39 @@
+.nav {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px 0;
+    width: 100%;
+    background-color: #181818;
+    z-index: 10;
+}
+
+.logo {
+    padding-left: 20px;
+}
+
+.links {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding:  20px 0;
+    display: flex;
+    justify-content: center;
+}
+  
+
+.navlink {
+    background-color: transparent!important;
+    color: #757575;
+}
+
+.navlink:hover {
+    background-color: transparent!important;
+    color: #fff!important;
+}

@@ -27,10 +27,10 @@ const sqlScript = fs.readFileSync('createScript.sql', 'utf-8');
 // Suorita SQL-create scriptit tietokannassa
 connection.connect((err) => {
     if (err) {
-        console.error('Virhe tietokantayhteydessä: ', err);
+        console.error('DB error: ', err);
         return;
     }
-    console.log('Yhteys tietokantaan onnistui.');
+    console.log('DB connected');
 
     // Suorita SQL-tiedoston komennot
     const sqlCommands = sqlScript.split(';').map(command => command.trim()).filter(command => command.length > 0);
@@ -39,9 +39,9 @@ connection.connect((err) => {
     sqlCommands.forEach((command) => {
         connection.query(command, (err, results) => {
             if (err) {
-            console.error('Virhe SQL-komennon suorittamisessa:', err.message);
+            console.error('SQL command error:', err.message);
             }
-            console.log('SQL-komento onnistui:', results);
+            console.log('succesful sql command:', results);
         });
     });
 });
@@ -57,7 +57,11 @@ app.post('/api/adduser', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ error: 'Kaikki kentät ovat pakollisia.' });
+        return res.status(400).json({ error: 'Fill all inputs.' });
+    }
+
+    if (!email.includes('@')) {
+        return res.status(400).json({ error: 'Email must contain @' });
     }
 
     try {
@@ -65,36 +69,30 @@ app.post('/api/adduser', async (req, res) => {
         const checkEmailSql = 'SELECT * FROM user WHERE email = ?';
         connection.query(checkEmailSql, [email], (err, results) => {
             if (err) {
-                console.error('Virhe tarkistettaessa sähköpostiosoitetta:', err);
-                return res.status(500).json({ error: 'Sähköpostin tarkistaminen epäonnistui.' });
+                return res.status(500).json({ error: 'Email checking error' });
             }
 
-            // Jos käyttäjä löytyy, palautetaan virhe
             if (results.length > 0) {
-                return res.status(400).json({ error: 'Tällä sähköpostiosoitteella on jo käyttäjä.' });
+                return res.status(400).json({ error: 'This email is already used' });
             }
 
             // Salasanan salaus
             bcrypt.hash(password, 10, (err, hashedPassword) => {
                 if (err) {
-                    console.error('Virhe salasanan salaamisessa:', err);
-                    return res.status(500).json({ error: 'Salasanan salaus epäonnistui.' });
+                    return res.status(500).json({ error: 'Internal password encoding error' });
                 }
 
-                // Käyttäjän lisääminen tietokantaan
                 const sql = 'INSERT INTO user (email, password) VALUES (?, ?)';
                 connection.query(sql, [email, hashedPassword], (err, results) => {
                     if (err) {
-                        console.error('Virhe tietojen lisäämisessä:', err);
-                        return res.status(500).json({ error: 'Tietojen lisääminen epäonnistui.' });
+                        return res.status(500).json({ error: 'Error inserting user to database' });
                     }
-                    res.status(201).json({ message: 'Käyttäjä lisätty onnistuneesti.', userId: results.insertId });
+                    res.status(201).json({ message: 'User added succesfully', userId: results.insertId });
                 });
             });
         });
     } catch (err) {
-        console.error('Virhe salasanan salaamisessa:', err);
-        res.status(500).json({ error: 'Salasanan salaus epäonnistui.' });
+        res.status(500).json({ error: 'Internal hashing or database error' });
     }
 });
 
@@ -103,24 +101,24 @@ app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return res.status(400).json({ error: 'Kaikki kentät ovat pakollisia.' });
+        return res.status(400).json({ error: 'Fill all fields' });
     }
 
     try {
         const sql = 'SELECT * FROM user WHERE email = ?';
         connection.query(sql, [email], async (err, results) => {
             if (err) {
-                return res.status(500).json({ error: 'Virhe kirjautumisessa.' });
+                return res.status(500).json({ error: 'Error in login' });
             }
 
             if (results.length === 0) {
-                return res.status(404).json({ error: 'Käyttäjää ei löytynyt.' });
+                return res.status(404).json({ error: 'Check email or password' });
             }
 
             const user = results[0];
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                return res.status(401).json({ error: 'Väärä salasana.' });
+                return res.status(401).json({ error: 'Check email or password' });
             }
 
             // Luo JWT-tunnus
@@ -131,15 +129,41 @@ app.post('/api/login', async (req, res) => {
             );
 
             // Lähetetään token vastauksena
-            res.status(200).json({ message: 'Kirjautuminen onnistui!', token });
+            res.status(200).json({ message: 'Login succesful', token });
         });
     } catch (err) {
-        res.status(500).json({ error: 'Virhe kirjautumisessa.' });
+        res.status(500).json({ error: 'Error in login' });
+    }
+});
+
+// GET-reitti kaikkia makroja varten (marketplace)
+app.get('/api/macros', async (req, res) => {
+    try {
+        // Käytetään Promisea tietokannan kyselylle
+        const results = await new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM macro LIMIT 100';
+            connection.query(sql, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Macros not found' });
+        }
+
+        // Lähetetään makrot vastauksena
+        res.status(200).json({ macros: results });
+    } catch (err) {
+        
+        res.status(500).json({ message: 'Error in retrieving macros' });
     }
 });
 
 
-
 app.listen(5000, () => {
-    console.log('Palvelin käynnissä portissa 5000');
+    console.log('Server using port 5000');
 });

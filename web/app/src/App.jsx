@@ -1,30 +1,29 @@
-import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+import { ThemeProvider } from '@mui/material/styles';  // MUI:n ThemeProvider
+import theme from './components/theme';  // Teema tiedosto
+import GlobalStyle from './components/GlobalStyle.jsx';  // GlobalStyle tiedosto
+
+// Sivut
 import Nav from './components/nav';
 import Login from './pages/login';
 import Register from './pages/register';
 import Home from './pages/home';
-
-
-function About() {
-  return <h2>About Page</h2>;
-}
+import About from './pages/about';
 
 function App() {
-
   return (
     <Router>
-      {/* Käytä Nav-komponenttia */}
-      <Nav />
-
-      {/* Määritä reitit */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
+      <ThemeProvider theme={theme}>  {/* Teema on asetettu */}
+        <GlobalStyle />
+        <Nav />
+        
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </ThemeProvider>
     </Router>
   );
 }
