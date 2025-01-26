@@ -26,3 +26,9 @@
         background-color: #4b4b4b;
     }
 }
+
+@media only screen and (max-width: 600px) {
+    .homeh1 {
+        font-size: 72px !important;
+    }
+}
