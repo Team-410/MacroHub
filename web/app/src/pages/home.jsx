@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Typography, Box, Button, Card, CardContent } from '@mui/material';
 import axios from 'axios';
 
@@ -74,18 +75,23 @@ function HomePage() {
             ) : (
                 <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>
                     {macros.map((macro) => (
-                        <Card key={macro.macroid} className='macrocard'>
-                            <CardContent sx={{ textAlign: 'left', overflow: 'auto', height: '100%' }}>
-                                <Typography variant="h6" component="div">
-                                    {macro.macroname}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                    Category: {macro.category}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                    {macro.macrodescription}
-                                </Typography>
-                            </CardContent>
+                        <Card key={macro.macroid} className="macrocard">
+                            <Link 
+                                to={`/macro/${macro.macroid}`}
+                                style={{ textDecoration: 'none', color: 'inherit' }}
+                            >
+                                <CardContent sx={{ textAlign: 'left', overflow: 'auto', height: '100%' }}>
+                                    <Typography variant="h6" component="div">
+                                        {macro.macroname}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                        Category: {macro.category}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                        {macro.macrodescription}
+                                    </Typography>
+                                </CardContent>
+                            </Link>
                         </Card>
                     ))}
                 </Box>

@@ -9,6 +9,7 @@ import Login from './pages/login';
 import Register from './pages/register';
 import Home from './pages/home';
 import About from './pages/about';
+import Macro from './pages/macro';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/macro/:id" element={<Macro />} />
           <Route path="/register" element={<Register />} />
         </Routes>
       </ThemeProvider>

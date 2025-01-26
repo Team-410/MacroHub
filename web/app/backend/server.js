@@ -139,8 +139,9 @@ app.post('/api/login', async (req, res) => {
 // GET-reitti kaikkia makroja varten (marketplace)
 app.get('/api/macros', async (req, res) => {
     try {
-        // Käytetään Promisea tietokannan kyselylle
+        
         const results = await new Promise((resolve, reject) => {
+
             const sql = 'SELECT * FROM macro LIMIT 100';
             connection.query(sql, (err, results) => {
                 if (err) {
@@ -155,13 +156,36 @@ app.get('/api/macros', async (req, res) => {
             return res.status(404).json({ message: 'Macros not found' });
         }
 
-        // Lähetetään makrot vastauksena
         res.status(200).json({ macros: results });
     } catch (err) {
         
         res.status(500).json({ message: 'Error in retrieving macros' });
     }
 });
+
+// GET path to get one macro (macropage)
+app.get('/api/macros/:id', (req, res) => {
+    const macroId = req.params.id;
+
+    if (!macroId || isNaN(macroId)) {
+        return res.status(400).json({ message: 'Invalid macro ID' });
+    }
+
+    const sql = 'SELECT * FROM macro WHERE macroid = ?';
+    connection.query(sql, [macroId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error in retrieving macro' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Macro not found' });
+        }
+
+        res.status(200).json({ macro: results[0] });
+    });
+});
+
 
 
 app.listen(5000, () => {
