@@ -1,6 +1,7 @@
 .nav {
     position: relative;
     display: flex;
+    flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: center;
     gap: 16px;
@@ -20,13 +21,12 @@
 .links {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
-    padding:  20px 0;
+    right: 0;
+    width: fit-content;
+    padding:  20px;
     display: flex;
-    justify-content: center;
+    justify-content: right;
 }
-  
 
 .navlink {
     background-color: transparent!important;
@@ -36,4 +36,50 @@
 .navlink:hover {
     background-color: transparent!important;
     color: #fff!important;
+}
+
+.menubutton {
+    display: none !important;
+}
+
+@media only screen and (max-width: 600px) {
+    .nav {
+        justify-content: space-between;
+    }
+    .links {
+        display: none;
+    }
+    .menubutton {
+        display: block !important;
+    }
+}
+
+.open {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    height: 100vh;
+    padding: 20px;
+    animation-name: openMenu;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+    background-color: rgba(0, 0, 0, .8);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+}
+
+@keyframes openMenu {
+    from {
+        background-color: rgba(0, 0, 0, 0.0);
+    }
+    to {
+        background-color: rgba(0, 0, 0, .8);
+    }
+    
 }
