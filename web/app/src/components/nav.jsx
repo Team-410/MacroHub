@@ -8,8 +8,10 @@ function Nav() {
     const theme = useTheme();
 
     const toggleMenu = () => {
-        document.getElementById('links').classList.toggle('open');
-    }
+        if (window.innerWidth < 600) {
+            document.getElementById('links').classList.toggle('open');
+        }
+    };
 
     return (
         <Box className="nav" sx={{

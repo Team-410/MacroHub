@@ -28,7 +28,7 @@ function HomePage() {
     }, []);
 
     return (
-        <Box sx={{ textAlign: 'center', mt: 4 }}>
+        <Box sx={{ textAlign: 'center', mt: 4, padding: 1 }}>
             <Typography
                 variant="h1"
                 component="h1"
@@ -42,8 +42,24 @@ function HomePage() {
                 MacroHub
             </Typography>
             <Typography
-                variant="h6"
+                variant="p"
                 component="p"
+                color="text.primary"
+                sx={{
+                    opacity: showText ? 1 : 0,
+                    transform: showText ? 'translateX(0)' : 'translateX(-150px)',
+                    transition: 'all 0.8s ease-out',
+                    opacity: 0.7,
+                    fontSize: 20,
+                    marginBottom: 3,
+                }}
+            >
+                Free marketplace for macros
+            </Typography>
+            <Typography
+                variant="p"
+                component="p"
+                color="text.secondary"
                 sx={{
                     opacity: showText ? 1 : 0,
                     transform: showText ? 'translateX(0)' : 'translateX(-150px)',
@@ -51,7 +67,7 @@ function HomePage() {
                     opacity: 0.7,
                 }}
             >
-                Macro library for your usecase
+                Download client to your computer <br /> and log in to start using macros
             </Typography>
             <Button
                 variant="contained"
@@ -73,7 +89,7 @@ function HomePage() {
             {loading ? (
                 <Typography variant="h6">Loading macros...</Typography>
             ) : (
-                <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center' }}>
+                <Box sx={{ mt: 4, display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'center' }}>
                     {macros.map((macro) => (
                         <Card key={macro.macroid} className="macrocard">
                             <Link 

@@ -2,6 +2,7 @@ CREATE TABLE user (
     userid INT PRIMARY KEY AUTO_INCREMENT,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    fullname VARCHAR(255) NOT NULL,
     role VARCHAR(50) NOT NULL DEFAULT 'user'
 );
 CREATE TABLE macro (

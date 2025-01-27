@@ -44,10 +44,21 @@ const theme = createTheme({
                 root: {
                     backgroundColor: "#f9f9f9",
                     color: '#757575',
+                    '&:focus': {
+                        outline: 'none',
+                    },
                     '&:hover': {
                         backgroundColor: "#b3b3b3",
                     },
                     transition: '0.3s linear',
+
+                    '&.MuiButton-text': {
+                        backgroundColor: 'transparent',
+
+                        '&:hover': {
+                            color: "#b3b3b3",
+                    },
+                    },
                 },
             },
         },

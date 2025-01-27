@@ -7,12 +7,12 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-// Käynnistä Express-palvelin
+const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
+
 const app = express(); 
 app.use(cors());
 app.use(express.json());
 
-// Yhteys MySQL-tietokantaan
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -21,10 +21,9 @@ const connection = mysql.createConnection({
     port: process.env.DB_PORT
 });
 
-// Lue SQL-skripti tiedostosta
+
 const sqlScript = fs.readFileSync('createScript.sql', 'utf-8');
 
-// Suorita SQL-create scriptit tietokannassa
 connection.connect((err) => {
     if (err) {
         console.error('DB error: ', err);
@@ -32,10 +31,9 @@ connection.connect((err) => {
     }
     console.log('DB connected');
 
-    // Suorita SQL-tiedoston komennot
+    // run sql create commands
     const sqlCommands = sqlScript.split(';').map(command => command.trim()).filter(command => command.length > 0);
 
-    // Suorita komennot erikseen
     sqlCommands.forEach((command) => {
         connection.query(command, (err, results) => {
             if (err) {
@@ -51,10 +49,10 @@ connection.connect((err) => {
     kuin client scriptissä
 */
 
-// POST-reitti Käyttäjän lisäämiseen (register)
+// POST-path to adding user (register)
 app.post('/api/adduser', async (req, res) => {
     console.log('Pyyntö tullut adduser-reitille', req.body);
-    const { email, password } = req.body;
+    const { email, password, fullname } = req.body;
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Fill all inputs.' });
@@ -65,7 +63,7 @@ app.post('/api/adduser', async (req, res) => {
     }
 
     try {
-        // Tarkistetaan, onko käyttäjällä jo sama sähköpostiosoite
+        // check for duplicate email
         const checkEmailSql = 'SELECT * FROM user WHERE email = ?';
         connection.query(checkEmailSql, [email], (err, results) => {
             if (err) {
@@ -76,14 +74,14 @@ app.post('/api/adduser', async (req, res) => {
                 return res.status(400).json({ error: 'This email is already used' });
             }
 
-            // Salasanan salaus
+            // Password encrypt
             bcrypt.hash(password, 10, (err, hashedPassword) => {
                 if (err) {
                     return res.status(500).json({ error: 'Internal password encoding error' });
                 }
 
-                const sql = 'INSERT INTO user (email, password) VALUES (?, ?)';
-                connection.query(sql, [email, hashedPassword], (err, results) => {
+                const sql = 'INSERT INTO user (email, password, fullname) VALUES (?, ?, ?)';
+                connection.query(sql, [email, hashedPassword, fullname], (err, results) => {
                     if (err) {
                         return res.status(500).json({ error: 'Error inserting user to database' });
                     }
@@ -96,7 +94,7 @@ app.post('/api/adduser', async (req, res) => {
     }
 });
 
-// POST-reitti kirjautumista varten (login)
+// POST-Path for login (login)
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -136,7 +134,7 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// GET-reitti kaikkia makroja varten (marketplace)
+// GET-path for all macros (marketplace)
 app.get('/api/macros', async (req, res) => {
     try {
         
@@ -163,7 +161,7 @@ app.get('/api/macros', async (req, res) => {
     }
 });
 
-// GET path to get one macro (macropage)
+// GET-path to get one macro (macropage)
 app.get('/api/macros/:id', (req, res) => {
     const macroId = req.params.id;
 
@@ -185,6 +183,65 @@ app.get('/api/macros/:id', (req, res) => {
         res.status(200).json({ macro: results[0] });
     });
 });
+
+// Get-path to get macros comments
+app.get('/api/macros/:id/comments', (req, res) => {
+    const macroId = req.params.id;
+
+    if (!macroId || isNaN(macroId) || macroId <= 0) {
+        return res.status(400).json({ message: 'Invalid macro ID' });
+    }
+
+    const sql = 'SELECT * FROM comment WHERE macroid = ?';
+    connection.query(sql, [macroId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Error in retrieving comments' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'comments not found' });
+        }
+
+        res.status(200).json({ results });
+    });
+})
+
+// POST-path to post macros comment
+app.post('/api/macros/:id/comments', (req, res) => {
+    const macroId = req.params.id;
+    const { fullname, comment } = req.body;
+    const token = req.headers.authorization?.split(' ')[1]; // Extract token from "Authorization: Bearer <token>"
+
+    // Validate inputs
+    if (!macroId || isNaN(macroId) || macroId <= 0) {
+        return res.status(400).json({ message: 'Invalid macro ID' });
+    }
+
+    if (!token) {
+        return res.status(401).json({ message: 'Token missing, please log in' });
+    }
+
+    // Verify the token
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid or expired token' });
+        }
+
+        // Token is valid, proceed to insert comment
+        const sql = 'INSERT INTO comment (macroid, fullname, comment) VALUES (?, ?, ?)';
+        connection.query(sql, [macroId, fullname, comment], (err, result) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: 'Error in adding comment' });
+            }
+
+            res.status(201).json({ message: 'Comment added successfully', commentId: result.insertId });
+        });
+    });
+});
+
+
 
 
 

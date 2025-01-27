@@ -1,8 +1,11 @@
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { formatTimestamp } from '../utils/formatTimestamp';
+import Backbutton from '../components/backbutton';
+
+import Comments from "../components/comments";
 
 function Macro() {
     const { id } = useParams();
@@ -44,7 +47,8 @@ function Macro() {
     }
 
     return (
-        <Box>
+        <Box sx={{ padding: 1, maxWidth: 500, }}>
+            <Backbutton></Backbutton>
             <Typography variant="h4" gutterBottom sx={{
                     opacity: animation ? 1 : 0,
                     transform: animation ? 'translateY(0)' : 'translateY(-50px)',
@@ -71,7 +75,7 @@ function Macro() {
             <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
                 Download date: {formatTimestamp(macro.timestamp)}
             </Typography>
-            <Button sx={{ mt: 5, padding: 1 }} onClick={() => setShowMacro(show => !show)}>
+            <Button variant="contaided" sx={{ mt: 5, padding: 1 }} onClick={() => setShowMacro(show => !show)}>
                 {showMacro ? "Hide macro" : "Show macro"}
             </Button>
 
@@ -80,6 +84,7 @@ function Macro() {
                     {macro.macro}
                 </Typography>
             )}
+            <Comments></Comments>
         </Box>
     );
 }

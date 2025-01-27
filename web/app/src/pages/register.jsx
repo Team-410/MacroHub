@@ -18,6 +18,7 @@ const register = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
+        fullname: "",
     });
 
     const handleChange = (e) => {
@@ -94,6 +95,16 @@ const register = () => {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="fullname"
+                        label="fullname"
+                        type="fullname"
+                        id="fullname"
                         onChange={handleChange}
                     />
                     <Button
