@@ -34,7 +34,7 @@ const login = () => {
             });
 
             if (response.status === 200) {
-                console.log("Kirjautuminen onnistui:", response.data);
+                console.log("Kirjautuminen onnistui:", response);
                 alert("Kirjautuminen onnistui!");
 
                 // Tallenna JWT localStorageen

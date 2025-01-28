@@ -121,10 +121,11 @@ app.post('/api/login', async (req, res) => {
 
             // Luo JWT-tunnus
             const token = jwt.sign(
-                { userId: user.id, email: user.email }, // Payload
+                { userId: user.userid, email: user.email }, // Payload
                 process.env.JWT_SECRET, // Salainen avain
                 { expiresIn: '1h' } // Aika, jonka jälkeen token vanhenee
             );
+            
 
             // Lähetetään token vastauksena
             res.status(200).json({ message: 'Login succesful', token });
@@ -239,6 +240,38 @@ app.post('/api/macros/:id/comments', (req, res) => {
             res.status(201).json({ message: 'Comment added successfully', commentId: result.insertId });
         });
     });
+});
+
+// GET-path to personal list (python client)
+app.get('/api/personal_list', async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    console.log(token);
+    
+    
+    let decoded = jwt.verify(token, JWT_SECRET);
+    const userid = decoded.userId;
+    
+    try {
+        const results = await new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM personal_list as pl JOIN macro as m on pl.macroid = m.macroid  WHERE pl.userid = ?';
+            connection.query(sql, [userid], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'list not found' });
+        }
+
+        res.status(200).json({ results });
+    } catch (err) {
+        console.error(err); // Lokita virhe selkeyden vuoksi
+        res.status(500).json({ message: 'Error in retrieving macros' });
+    }
 });
 
 

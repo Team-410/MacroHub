@@ -48,7 +48,7 @@ const BackButton = ({ to = -1, sx, ...props }) => {
             }}
             {...props}
         >
-            Takaisin
+            Back
         </Button>
     );
 };
