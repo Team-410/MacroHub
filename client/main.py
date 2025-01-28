@@ -1,9 +1,13 @@
 import tkinter as tk
 from tkinter import messagebox
-import os
-
-# Tuodaan login-funktio login.py-tiedostosta
 from api_requests.login import login
+from pages.welcome import welcome_window
+
+# tämä on pääikkuna joka avautuu joka kerta kun käyttäjä ajaa ohjelman
+# jos kirjautuminen menee läpi siirrytään welcome pagelle jne...
+# Kaikki ikkunat pages kansioon
+# kaikki api pyynnöt api_requests kansioon
+# jwt_decrypt importattuna funktioosi palauttaa kirjautuneen käyttäjän secret.txt purettuna (userid ja fullname) 
 
 # Pääikkuna
 def create_main_window():
@@ -31,17 +35,20 @@ def create_main_window():
             # Kutsutaan login-funktiota ja tarkistetaan sen paluuarvo
             success = login(email, password)
             if not success:
-                messagebox.showerror("Error", "Wrong email or password. If you dont have user yet go to macrohub.com and create user")
+                messagebox.showerror("Error", "Wrong email or password. If you don't have user yet go to macrohub.com and create user")
             else:
-                messagebox.showinfo("Login succesful!", "Login succesful!")
+                messagebox.showinfo("Login successful!", "Login successful!")
+                
+                # Sulje nykyinen ikkuna ja avaa uusi
+                window.destroy()
+                welcome_window() # tervetuloa ikkuna
         else:
             messagebox.showerror("Input Error", "Fill both inputs")
 
-    
     login_button = tk.Button(window, text="Login", command=on_login)
     login_button.grid(row=2, column=0, columnspan=2, pady=10)
 
-    # Käynnistä käyttöliittymä
+    # Käynnistä pääikkuna
     window.mainloop()
 
 # Suorita sovellus

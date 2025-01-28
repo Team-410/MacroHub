@@ -114,6 +114,8 @@ app.post('/api/login', async (req, res) => {
             }
 
             const user = results[0];
+            console.log(user);
+            
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 return res.status(401).json({ error: 'Check email or password' });
@@ -121,9 +123,9 @@ app.post('/api/login', async (req, res) => {
 
             // Luo JWT-tunnus
             const token = jwt.sign(
-                { userId: user.userid, email: user.email }, // Payload
-                process.env.JWT_SECRET, // Salainen avain
-                { expiresIn: '1h' } // Aika, jonka jälkeen token vanhenee
+                { userId: user.userid, email: user.email, fullname: user.fullname },
+                process.env.JWT_SECRET, 
+                { expiresIn: '1h' }
             );
             
 
