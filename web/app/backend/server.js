@@ -274,6 +274,45 @@ app.get('/api/personal_list', async (req, res) => {
     }
 });
 
+// POST-path to vote list (macropage)
+app.post('/api/vote', async (req, res) => {
+    const { macroid, vote } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];    
+    
+    if (!token) {
+        return res.status(401).json({ message: 'Authorization token missing' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const userid = decoded.userId;
+
+        if (!macroid || typeof vote === 'undefined') {
+            return res.status(400).json({ message: 'macroid or vote missing' });
+        }
+
+        const results = await new Promise((resolve, reject) => {
+            const sql = 'INSERT INTO vote (macroid, userid, vote) VALUES (?, ?, ?)';
+            connection.query(sql, [macroid, userid, vote], (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        });
+
+        res.status(200).json({ results });
+    } catch (err) {
+        console.error('Error in voting:', err);
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+        res.status(500).json({ message: 'Error in voting' });
+    }
+});
+
+
 
 
 
