@@ -49,6 +49,7 @@
     }
     .links {
         display: none;
+        box-sizing: border-box;
     }
     .menubutton {
         display: block !important;
