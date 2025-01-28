@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 import {
@@ -12,6 +13,9 @@ import {
 } from "@mui/material";
 
 const login = () => {
+
+    const navigate = useNavigate();
+    const [token, setToken] = useState(localStorage.getItem('authToken'));
 
     const [formData, setFormData] = useState({
         email: "",
@@ -39,6 +43,11 @@ const login = () => {
 
                 // Tallenna JWT localStorageen
                 localStorage.setItem("authToken", response.data.token);
+
+                // vittu mikä purkkaratkaisu, pitää korjata
+                setToken(response.data.token);
+                navigate('/');
+                window.location.reload();
 
             } else {
                 alert("Kirjautuminen epäonnistui: " + response.statusText);
