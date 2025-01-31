@@ -89,7 +89,7 @@ const Comments = () => {
     }
 
     return (
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4, width: 300 }}>
             <Box sx={{ display: 'flex' }}>
                 <Button variant="text" sx={{ mt: 5, padding: 1 }} onClick={() => setShowComments((prev) => !prev)}>
                     {showComments ? 'Hide comments' : 'Show comments'}
