@@ -7,6 +7,9 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+import authenticateToken from "./authenticator.js";
+
+
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
 const app = express(); 
@@ -48,6 +51,37 @@ connection.connect((err) => {
     Tästä alkaa apin reiti, näitä reittejä käytetään niin web sovelluksessa
     kuin client scriptissä
 */
+
+// Validate token aina kun tulee näkymän vaihto
+app.get("/api/token/refresh", (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({ error: "Token puuttuu" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: "Token ei kelpaa" });
+        }
+
+        console.log("User details from token:", user);
+
+        const newToken = jwt.sign(
+            { 
+                userId: user.userId, 
+                email: user.email,
+                fullname: user.fullname,
+                role: user.role 
+            },
+            process.env.JWT_SECRET, 
+            { expiresIn: '1h' }
+        );
+
+        res.json({ message: "Token päivitetty!", token: newToken });
+    });
+});
 
 // POST-path to adding user (register)
 app.post('/api/adduser', async (req, res) => {
@@ -123,7 +157,12 @@ app.post('/api/login', async (req, res) => {
 
             // Luo JWT-tunnus
             const token = jwt.sign(
-                { userId: user.userid, email: user.email, fullname: user.fullname },
+                { 
+                    userId: user.userid, 
+                    email: user.email, 
+                    fullname: user.fullname,
+                    role: user.role  // Lisää tämä kenttä
+                },
                 process.env.JWT_SECRET, 
                 { expiresIn: '1h' }
             );
@@ -214,7 +253,7 @@ app.get('/api/macros/:id/comments', (req, res) => {
 app.post('/api/macros/:id/comments', (req, res) => {
     const macroId = req.params.id;
     const { fullname, comment } = req.body;
-    const token = req.headers.authorization?.split(' ')[1]; // Extract token from "Authorization: Bearer <token>"
+    const token = req.headers.authorization?.split(' ')[1];
 
     // Validate inputs
     if (!macroId || isNaN(macroId) || macroId <= 0) {
@@ -247,11 +286,11 @@ app.post('/api/macros/:id/comments', (req, res) => {
 // GET-path to personal list (python client)
 app.get('/api/personal_list', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
-    console.log(token);
     
     
     let decoded = jwt.verify(token, JWT_SECRET);
     const userid = decoded.userId;
+    console.log(decoded);
     
     try {
         const results = await new Promise((resolve, reject) => {

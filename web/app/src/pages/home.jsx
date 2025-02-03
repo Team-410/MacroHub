@@ -17,7 +17,6 @@ function HomePage() {
         axios.get('/api/macros')
             .then(response => {
                 setMacros(response.data.macros);
-                console.log(response);
             })
             .catch(error => {
                 console.error("Error fetching macros:", error);
@@ -28,7 +27,7 @@ function HomePage() {
     }, []);
 
     return (
-        <Box sx={{ textAlign: 'center', mt: 4, padding: 1 }}>
+        <Box sx={{ textAlign: 'center', mt: 2, padding: 1 }}>
             <Typography
                 variant="h1"
                 component="h1"

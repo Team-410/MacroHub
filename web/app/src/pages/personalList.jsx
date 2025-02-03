@@ -25,7 +25,6 @@ function PersonalList() {
             })
             .then((response) => {
                 if (response.data) {
-                    console.log(response);
                     setList(response.data.results);
                 } else {
                     setError("List not found.");

@@ -89,7 +89,7 @@ const Comments = () => {
     }
 
     return (
-        <Box sx={{ mt: 4, width: 300 }}>
+        <Box sx={{ mt: 4, }}>
             <Box sx={{ display: 'flex' }}>
                 <Button variant="text" sx={{ mt: 5, padding: 1 }} onClick={() => setShowComments((prev) => !prev)}>
                     {showComments ? 'Hide comments' : 'Show comments'}
@@ -109,7 +109,7 @@ const Comments = () => {
             )}
 
             {addComment && (
-                <Button variant="contained" onClick={handleAddComment} sx={{ mt: 2 }}>
+                <Button variant="contained" onClick={handleAddComment} sx={{ mt: 2, mb: 2 }}>
                     Submit
                 </Button>
             )}
@@ -133,7 +133,7 @@ const Comments = () => {
                     </Box>
                 ))
             ) : (
-                <Typography variant="p" color="text.secondary">
+                <Typography variant="p" color="text.secondary" sx={{ display: 'block' }}>
                     {showComments ? 'No comments yet, here is your chance to be the first' : ''}
                 </Typography>
             )}

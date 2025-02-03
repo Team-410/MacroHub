@@ -19,6 +19,11 @@ function Nav() {
         setToken(storedToken);
     }, []);
 
+    const handleLogout = () => {
+        localStorage.removeItem('authToken');
+        setToken(null);
+    };
+
     return (
         <Box className="nav" sx={{
             borderBottom: `1px solid ${theme.palette.secondary.main}`,
@@ -30,14 +35,19 @@ function Nav() {
                 <Button className='navlink' component={Link} to="/" variant="text">
                     Home
                 </Button>
-                {token && (
-                    <Button className='navlink' component={Link} to="personalList" variant="text">
-                        My macros
-                    </Button>
-                )}
                 <Button className='navlink' component={Link} to="/about" variant="text">
                     About
                 </Button>
+                {token && (
+                    <>
+                        <Button className='navlink' component={Link} to="personalList" variant="text">
+                            My macros
+                        </Button>
+                        <Button className='navlink' onClick={handleLogout} variant="text">
+                            Logout
+                        </Button>
+                    </>
+                )}
                 {!token && (
                     <>
                         <Button className='navlink' component={Link} to="/login" variant="text">
