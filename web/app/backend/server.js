@@ -10,6 +10,8 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
+import votes from './endpoints/vote.js';
+
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
@@ -60,6 +62,8 @@ connection.connect((err) => {
     Tästä alkaa apin reiti, näitä reittejä käytetään niin web sovelluksessa
     kuin client scriptissä
 */
+
+app.use('/api', votes);
 
 // Validate token aina kun tulee näkymän vaihto
 app.get("/api/token/refresh", (req, res) => {
@@ -354,32 +358,6 @@ app.post('/api/vote', async (req, res) => {
             return res.status(401).json({ message: 'Invalid token' });
         }
         res.status(500).json({ message: 'Error in voting' });
-    }
-});
-
-// Get total votes for a specific macro
-app.get("/api/macro/:macroid/votes", async (req, res) => {
-    const { macroid } = req.params;
-
-    try {
-        // Hae upvote-määrä
-        const [[{ upcount }]] = await connection2.query(
-            "SELECT COUNT(*) AS upcount FROM vote WHERE macroid = ? AND vote = 1",
-            [macroid]
-        );    
-
-        // Hae downvote-määrä
-        const [[{ downcount }]] = await connection2.query(
-            "SELECT COUNT(*) AS downcount FROM vote WHERE macroid = ? AND vote = 0",
-            [macroid]
-        );    
-
-        const voteTotal = upcount - downcount;
-
-        res.status(200).json({ macroid, upvotes: upcount, downvotes: downcount, total: voteTotal });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Error retrieving votes" });
     }
 });
 
