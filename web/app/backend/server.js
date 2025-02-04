@@ -7,8 +7,6 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import authenticateToken from "./authenticator.js";
-
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
