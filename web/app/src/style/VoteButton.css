@@ -1,25 +1,28 @@
 .vote-container {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    margin: 20px 0 -20px 0;
     font-family: Arial, sans-serif;
 }
 
 .vote-button {
+    padding: 0!important;
+    margin: 0 20px 0 0;
     background: none;
-    border: none;
     font-size: 24px;
+    border: none!important;
+    outline: none!important;
     color: #888;
     cursor: pointer;
     transition: color 0.2s ease;
 }
 
-.vote-button.active {
-    color: orange; /* Highlight when user has voted */
+.downvote {
+    margin-left: 20px;
 }
 
 .vote-button:hover {
-    color: black;
+    color: #ffffff;
 }
 
 .vote-count {

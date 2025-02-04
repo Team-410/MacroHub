@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../style/VoteButton.css";
+import Upvote from "@mui/icons-material/ArrowUpward"
+import Downvote from "@mui/icons-material/ArrowDownward"
 
-const VoteButton = ({ postId, userId }) => {
+const VoteButton = ({ macroid, userId }) => {
     const [votes, setVotes] = useState(0);
     const [userVote, setUserVote] = useState(null);
 
     useEffect(() => {
         if (!userId) return;
 
-        axios.get(`http://localhost:5000/api/macro/${postId}/votes`)
+        axios.get(`http://localhost:5000/api/macro/${macroid}/votes`)
             .then(response => {
-                setVotes(response.data.votes);
-                setUserVote(response.data.userVote); // Whether user has voted
+                console.log(response);
+                setVotes(response.data.total);
+                setUserVote(response.data.userVote);
             })
             .catch(error => console.error("Error fetching votes:", error));
-    }, [postId, userId]);
+    }, [macroid, userId, userVote]);
 
     const handleVote = (type) => {
         if (!userId) return alert("You need to log in to vote!");
 
-        axios.post(`http://localhost:5000/api/macro/${postId}/vote`, { voteType: type, userId })
+        axios.post(`http://localhost:5000/api/macro/${macroid}/vote`, { voteType: type, userId })
             .then(response => {
                 setVotes(response.data.votes);
                 setUserVote(type);
@@ -32,16 +35,16 @@ const VoteButton = ({ postId, userId }) => {
         <div className="vote-container">
             <button 
                 className={`vote-button ${userVote === "upvote" ? "active" : ""}`} 
-                onClick={() => handleVote("upvote")}
+                onClick={() => handleVote("1")}
             >
-                ▲
+                <Upvote></Upvote>
             </button>
             <div className="vote-count">{votes}</div>
             <button 
                 className={`vote-button ${userVote === "downvote" ? "active" : ""}`} 
-                onClick={() => handleVote("downvote")}
+                onClick={() => handleVote("0")}
             >
-                ▼
+                <Downvote className="downvote"></Downvote>
             </button>
         </div>
     );

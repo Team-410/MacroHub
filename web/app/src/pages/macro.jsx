@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { formatTimestamp } from '../utils/formatTimestamp';
 import Backbutton from '../components/backbutton';
+import VoteButton from "../components/VoteButton";
 
 import Comments from "../components/comments";
 
@@ -14,8 +15,16 @@ function Macro() {
     const [error, setError] = useState(null);
     const [animation, setAnimation] = useState(false);
     const [showMacro, setShowMacro] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null); // Track logged-in user
 
     useEffect(() => {
+
+        // Load logged-in user from localStorage
+        const storedUserId = localStorage.getItem("userId");
+        console.log("Stored userId:", storedUserId);
+        if (storedUserId) {
+            setCurrentUser({ userId: storedUserId });
+        }
         
         axios.get(`/api/macros/${id}`)
             .then(response => {
@@ -75,6 +84,14 @@ function Macro() {
             <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
                 Download date: {formatTimestamp(macro.timestamp)}
             </Typography>
+            {currentUser ? (
+                <>
+                    {console.log(`Rendering VoteButton for Macro ID: ${macro.macroid}, User ID: ${currentUser.userId}`)}
+                    <VoteButton macroid={macro.macroid} userId={currentUser.userId} />
+                </>
+            ) : (
+                <Typography color="text.secondary">Log in to vote</Typography>
+            )}
             <Button variant="contaided" sx={{ mt: 5, padding: 1 }} onClick={() => setShowMacro(show => !show)}>
                 {showMacro ? "Hide macro" : "Show macro"}
             </Button>

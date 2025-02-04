@@ -1,7 +1,10 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
+
 import mysql from 'mysql2';
+import mysql2 from 'mysql2/promise';
+
 import fs from 'fs';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
@@ -15,6 +18,14 @@ app.use(cors());
 app.use(express.json());
 
 const connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+});
+
+const connection2 = await mysql2.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -182,18 +193,7 @@ app.post('/api/login', async (req, res) => {
 // GET-path for all macros (marketplace)
 app.get('/api/macros', async (req, res) => {
     try {
-
-        const results = await new Promise((resolve, reject) => {
-
-            const sql = 'SELECT * FROM macro LIMIT 100';
-            connection.query(sql, (err, results) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
-                }
-            });
-        });
+        const [results] = await connection2.query('SELECT * FROM macro LIMIT 100');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Macros not found' });
@@ -201,10 +201,11 @@ app.get('/api/macros', async (req, res) => {
 
         res.status(200).json({ macros: results });
     } catch (err) {
-
+        console.error(err);
         res.status(500).json({ message: 'Error in retrieving macros' });
     }
 });
+
 
 // GET-path to get one macro (macropage)
 app.get('/api/macros/:id', (req, res) => {
@@ -357,82 +358,67 @@ app.post('/api/vote', async (req, res) => {
 });
 
 // Get total votes for a specific macro
-app.get("/api/macro/:postId/votes", (req, res) => {
-    const { postId } = req.params;
-    connection.query(
-        "SELECT SUM(vote) AS votes FROM vote WHERE macroid = ?",
-        [postId],
-        (err, results) => {
-            if (err) {
-                console.error("Error fetching votes:", err);
-                return res.status(500).json({ message: "Database error" });
-            }
-            res.json({ votes: results[0]?.votes || 0 });
-        }
-    );
+app.get("/api/macro/:macroid/votes", async (req, res) => {
+    const { macroid } = req.params;
+
+    try {
+        // Hae upvote-määrä
+        const [[{ upcount }]] = await connection2.query(
+            "SELECT COUNT(*) AS upcount FROM vote WHERE macroid = ? AND vote = 1",
+            [macroid]
+        );    
+
+        // Hae downvote-määrä
+        const [[{ downcount }]] = await connection2.query(
+            "SELECT COUNT(*) AS downcount FROM vote WHERE macroid = ? AND vote = 0",
+            [macroid]
+        );    
+
+        const voteTotal = upcount - downcount;
+
+        res.status(200).json({ macroid, upvotes: upcount, downvotes: downcount, total: voteTotal });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error retrieving votes" });
+    }
 });
+
 
 // Handle upvotes and downvotes
-app.post("/api/macro/:postId/vote", (req, res) => {
-    const { postId } = req.params;
-    const { voteType, userId } = req.body;  // User ID must be sent from frontend
-    const voteValue = voteType === "upvote" ? 1 : -1;
+app.post("/api/macro/:macroid/vote", async (req, res) => {
+    const { macroid } = req.params;
+    const { voteType, userId } = req.body;
+    const voteValue = voteType ;
+    
 
-    // Check if user has already voted
-    connection.query(
-        "SELECT * FROM vote WHERE macroid = ? AND userid = ?",
-        [postId, userId],
-        (err, results) => {
-            if (err) {
-                console.error("Error checking existing vote:", err);
-                return res.status(500).json({ message: "Database error" });
-            }
+    try {
+        // Tarkistetaan, onko käyttäjä jo äänestänyt
+        const [existingVote] = await connection2.query(
+            "SELECT * FROM vote WHERE userid = ? AND macroid = ?",
+            [userId, macroid]
+        );
 
-            if (results.length > 0) {
-                // If user clicked the same vote, remove their vote (toggle off)
-                if (results[0].vote === voteValue) {
-                    connection.query(
-                        "DELETE FROM vote WHERE macroid = ? AND userid = ?",
-                        [postId, userId],
-                        (err) => {
-                            if (err) {
-                                console.error("Error removing vote:", err);
-                                return res.status(500).json({ message: "Database error" });
-                            }
-                            res.json({ message: "Vote removed", votes: results[0].votes - voteValue });
-                        }
-                    );
-                } else {
-                    // Update vote if user is changing their vote
-                    connection.query(
-                        "UPDATE vote SET vote = ? WHERE macroid = ? AND userid = ?",
-                        [voteValue, postId, userId],
-                        (err) => {
-                            if (err) {
-                                console.error("Error updating vote:", err);
-                                return res.status(500).json({ message: "Database error" });
-                            }
-                            res.json({ message: "Vote updated", votes: results[0].votes + (2 * voteValue) });
-                        }
-                    );
-                }
-            } else {
-                // If user hasn't voted before, insert new vote
-                connection.query(
-                    "INSERT INTO vote (macroid, userid, vote) VALUES (?, ?, ?)",
-                    [postId, userId, voteValue],
-                    (err) => {
-                        if (err) {
-                            console.error("Error inserting vote:", err);
-                            return res.status(500).json({ message: "Database error" });
-                        }
-                        res.json({ message: "Vote added", votes: voteValue });
-                    }
-                );
-            }
+        if (existingVote.length > 0) {
+            // Käyttäjä on jo äänestänyt, päivitetään ääni
+            await connection2.query(
+                "UPDATE vote SET vote = ? WHERE userid = ? AND macroid = ?",
+                [voteValue, userId, macroid]
+            );
+        } else {
+            // Käyttäjä ei ole vielä äänestänyt, lisätään uusi ääni
+            await connection2.query(
+                "INSERT INTO vote (userid, macroid, vote) VALUES (?, ?, ?)",
+                [userId, macroid, voteValue]
+            );
         }
-    );
+
+        res.status(200).json({ message: "Vote recorded successfully" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error processing vote" });
+    }
 });
+
 
 
 

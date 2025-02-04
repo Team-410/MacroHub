@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Box, Button, Card, CardContent } from '@mui/material';
 import axios from 'axios';
-import VoteButton from "../components/VoteButton";
 
 
 import '../style/home.css';
@@ -11,18 +10,10 @@ function HomePage() {
     const [showText, setShowText] = useState(false);
     const [macros, setMacros] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useState(null); // Track logged-in user
 
 
     useEffect(() => {
         setShowText(true);
-
-        // Load logged-in user from localStorage
-        const storedUserId = localStorage.getItem("userId");
-        console.log("Stored userId:", storedUserId);
-        if (storedUserId) {
-            setCurrentUser({ userId: storedUserId });
-        }
 
         // Haetaan makrot API:sta
         axios.get('/api/macros')
@@ -118,17 +109,6 @@ function HomePage() {
                                     </Typography>
                                 </CardContent>
                             </Link>
-
-                            {/* ✅ Log when VoteButton renders */}
-                            {currentUser ? (
-                                <>
-                                    {console.log(`Rendering VoteButton for Macro ID: ${macro.macroid}, User ID: ${currentUser.userId}`)}
-                                    <VoteButton postId={macro.macroid} userId={currentUser.userId} />
-                                </>
-                            ) : (
-                                <Typography color="text.secondary">Log in to vote</Typography>
-                            )}
-
                         </Card>
                     ))}
                 </Box>
