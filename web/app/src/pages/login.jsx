@@ -44,6 +44,12 @@ const login = () => {
                 // Tallenna JWT localStorageen
                 localStorage.setItem("authToken", response.data.token);
 
+                // ✅ Store userId
+                localStorage.setItem("userId", response.data.userId);
+
+                // ✅ Log to verify it's stored
+                console.log("Stored userId:", response.data.userId);
+
                 // vittu mikä purkkaratkaisu, pitää korjata
                 setToken(response.data.token);
                 navigate('/');
@@ -57,7 +63,7 @@ const login = () => {
             console.error("Virhe kirjautumisessa:", error);
 
             if (error.response && error.response.data && error.response.data.error) {
-                alert("Virhe kirjautumisessa: " + error.response.data.error);     
+                alert("Virhe kirjautumisessa: " + error.response.data.error);
             } else {
                 alert("Tuntematon virhe: " + error.message);
             }

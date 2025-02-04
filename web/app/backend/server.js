@@ -7,12 +7,14 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-import authenticateToken from "./authenticator.js";
+// import authenticateToken from "./authenticator.js";
+import { authenticateToken, generateToken } from "./authenticator.js";
+
 
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_secret_key';
 
-const app = express(); 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
@@ -40,7 +42,7 @@ connection.connect((err) => {
     sqlCommands.forEach((command) => {
         connection.query(command, (err, results) => {
             if (err) {
-            console.error('SQL command error:', err.message);
+                console.error('SQL command error:', err.message);
             }
             console.log('succesful sql command:', results);
         });
@@ -69,13 +71,13 @@ app.get("/api/token/refresh", (req, res) => {
         console.log("User details from token:", user);
 
         const newToken = jwt.sign(
-            { 
-                userId: user.userId, 
+            {
+                userId: user.userId,
                 email: user.email,
                 fullname: user.fullname,
-                role: user.role 
+                role: user.role
             },
-            process.env.JWT_SECRET, 
+            process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
@@ -149,7 +151,7 @@ app.post('/api/login', async (req, res) => {
 
             const user = results[0];
             console.log(user);
-            
+
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 return res.status(401).json({ error: 'Check email or password' });
@@ -157,19 +159,24 @@ app.post('/api/login', async (req, res) => {
 
             // Luo JWT-tunnus
             const token = jwt.sign(
-                { 
-                    userId: user.userid, 
-                    email: user.email, 
+                {
+                    userId: user.userid,
+                    email: user.email,
                     fullname: user.fullname,
                     role: user.role  // Lisää tämä kenttä
                 },
-                process.env.JWT_SECRET, 
+                process.env.JWT_SECRET,
                 { expiresIn: '1h' }
             );
+
+            console.log("Login successful:", { userId: user.userid, email: user.email });
+
             
+            //  Return userId along with token
+            res.json({ token, userId: user.userid, email: user.email, fullname: user.fullname });
 
             // Lähetetään token vastauksena
-            res.status(200).json({ message: 'Login succesful', token });
+
         });
     } catch (err) {
         res.status(500).json({ error: 'Error in login' });
@@ -179,7 +186,7 @@ app.post('/api/login', async (req, res) => {
 // GET-path for all macros (marketplace)
 app.get('/api/macros', async (req, res) => {
     try {
-        
+
         const results = await new Promise((resolve, reject) => {
 
             const sql = 'SELECT * FROM macro LIMIT 100';
@@ -198,7 +205,7 @@ app.get('/api/macros', async (req, res) => {
 
         res.status(200).json({ macros: results });
     } catch (err) {
-        
+
         res.status(500).json({ message: 'Error in retrieving macros' });
     }
 });
@@ -286,12 +293,12 @@ app.post('/api/macros/:id/comments', (req, res) => {
 // GET-path to personal list (python client)
 app.get('/api/personal_list', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
-    
-    
+
+
     let decoded = jwt.verify(token, JWT_SECRET);
     const userid = decoded.userId;
     console.log(decoded);
-    
+
     try {
         const results = await new Promise((resolve, reject) => {
             const sql = 'SELECT * FROM personal_list as pl JOIN macro as m on pl.macroid = m.macroid  WHERE pl.userid = ?';
@@ -318,8 +325,8 @@ app.get('/api/personal_list', async (req, res) => {
 // POST-path to vote list (macropage)
 app.post('/api/vote', async (req, res) => {
     const { macroid, vote } = req.body;
-    const token = req.headers.authorization?.split(' ')[1];    
-    
+    const token = req.headers.authorization?.split(' ')[1];
+
     if (!token) {
         return res.status(401).json({ message: 'Authorization token missing' });
     }
@@ -351,6 +358,84 @@ app.post('/api/vote', async (req, res) => {
         }
         res.status(500).json({ message: 'Error in voting' });
     }
+});
+
+// Get total votes for a specific macro
+app.get("/api/macro/:postId/votes", (req, res) => {
+    const { postId } = req.params;
+    connection.query(
+        "SELECT SUM(vote) AS votes FROM vote WHERE macroid = ?",
+        [postId],
+        (err, results) => {
+            if (err) {
+                console.error("Error fetching votes:", err);
+                return res.status(500).json({ message: "Database error" });
+            }
+            res.json({ votes: results[0]?.votes || 0 });
+        }
+    );
+});
+
+// Handle upvotes and downvotes
+app.post("/api/macro/:postId/vote", (req, res) => {
+    const { postId } = req.params;
+    const { voteType, userId } = req.body;  // User ID must be sent from frontend
+    const voteValue = voteType === "upvote" ? 1 : -1;
+
+    // Check if user has already voted
+    connection.query(
+        "SELECT * FROM vote WHERE macroid = ? AND userid = ?",
+        [postId, userId],
+        (err, results) => {
+            if (err) {
+                console.error("Error checking existing vote:", err);
+                return res.status(500).json({ message: "Database error" });
+            }
+
+            if (results.length > 0) {
+                // If user clicked the same vote, remove their vote (toggle off)
+                if (results[0].vote === voteValue) {
+                    connection.query(
+                        "DELETE FROM vote WHERE macroid = ? AND userid = ?",
+                        [postId, userId],
+                        (err) => {
+                            if (err) {
+                                console.error("Error removing vote:", err);
+                                return res.status(500).json({ message: "Database error" });
+                            }
+                            res.json({ message: "Vote removed", votes: results[0].votes - voteValue });
+                        }
+                    );
+                } else {
+                    // Update vote if user is changing their vote
+                    connection.query(
+                        "UPDATE vote SET vote = ? WHERE macroid = ? AND userid = ?",
+                        [voteValue, postId, userId],
+                        (err) => {
+                            if (err) {
+                                console.error("Error updating vote:", err);
+                                return res.status(500).json({ message: "Database error" });
+                            }
+                            res.json({ message: "Vote updated", votes: results[0].votes + (2 * voteValue) });
+                        }
+                    );
+                }
+            } else {
+                // If user hasn't voted before, insert new vote
+                connection.query(
+                    "INSERT INTO vote (macroid, userid, vote) VALUES (?, ?, ?)",
+                    [postId, userId, voteValue],
+                    (err) => {
+                        if (err) {
+                            console.error("Error inserting vote:", err);
+                            return res.status(500).json({ message: "Database error" });
+                        }
+                        res.json({ message: "Vote added", votes: voteValue });
+                    }
+                );
+            }
+        }
+    );
 });
 
 

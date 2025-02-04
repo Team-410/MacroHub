@@ -1,0 +1,29 @@
+.vote-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+}
+
+.vote-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.vote-button.active {
+    color: orange; /* Highlight when user has voted */
+}
+
+.vote-button:hover {
+    color: black;
+}
+
+.vote-count {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 4px 0;
+}

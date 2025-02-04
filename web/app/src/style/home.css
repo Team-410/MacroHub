@@ -18,6 +18,7 @@
 }
 
 .macrocard {
+    overflow: visible !important;
     max-width: 300px;
     height: 200px;
     cursor: pointer;
