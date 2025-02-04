@@ -57,6 +57,52 @@ erDiagram
     macro ||--o{ comment : "has"
 ```
 
+#### Class diagram
+```mermaid
+classDiagram
+    class user {
+        +INT userid
+        +VARCHAR(255) email
+        +VARCHAR(255) password
+        +VARCHAR(255) fullname
+        +VARCHAR(50) role
+    }
+
+    class macro {
+        +INT macroid
+        +VARCHAR(255) macroname
+        +VARCHAR(255) macrodescription
+        +VARCHAR(255) app
+        +VARCHAR(255) category
+        +VARCHAR(255) macrotype
+        +TEXT macro
+        +TIMESTAMP timestamp
+    }
+
+    class personal_list {
+        +INT listid
+        +INT userid
+        +INT macroid
+        +VARCHAR(255) activation_key
+    }
+
+    class vote {
+        +INT voteid
+        +INT macroid
+        +INT userid
+        +BOOLEAN vote
+    }
+
+    class comment {
+        +INT commentid
+        +INT macroid
+        +VARCHAR(255) fullname
+        +TEXT comment
+        +TIMESTAMP timestamp
+    }
+```
+
+
 ### 🌐 FRONTEND
 ```bash
 # Step 0: Navigate to the frontend directory
