@@ -5,6 +5,7 @@ import axios from "axios";
 import { formatTimestamp } from '../utils/formatTimestamp';
 import Backbutton from '../components/backbutton';
 import VoteButton from "../components/VoteButton";
+import SaveButton from "../components/SaveButton";
 
 import Comments from "../components/comments";
 
@@ -91,6 +92,13 @@ function Macro() {
                 </>
             ) : (
                 <Typography color="text.secondary">Log in to vote</Typography>
+            )}
+            {currentUser ? (
+                <>
+                  <SaveButton macroid={macro.macroid} userId={currentUser.userId} />
+                </>
+            ) : (
+                <Typography color="text.secondary">Log in to save macros to mylist</Typography>
             )}
             <Button variant="contaided" sx={{ mt: 5, padding: 1 }} onClick={() => setShowMacro(show => !show)}>
                 {showMacro ? "Hide macro" : "Show macro"}

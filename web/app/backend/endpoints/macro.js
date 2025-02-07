@@ -81,6 +81,46 @@ router.get('/personal_list', async (req, res) => {
     }
 });
 
+// POST-path to add macro to personal list (web client)
+router.post('/personal_list', async (req, res) => {
+    const { macroid, userId } = req.body;
+
+    if (!userId || isNaN(userId)) {
+        return res.status(400).json({ message: 'Token missing or malformed' });
+    }
+
+    if (!macroid || isNaN(macroid)) {
+        return res.status(400).json({ message: 'Invalid macro ID' });
+    }
+    const checkMacroSql = 'SELECT * FROM macro WHERE macroid = ?';
+    try {
+        const [macroResults] = await connection2.query(checkMacroSql, [macroid]);
+        if (macroResults.length === 0) {
+            return res.status(404).json({ message: 'Macro ID not found' });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error in checking macro ID' });
+    }
+
+    const existingPersonalListSql = 'SELECT * FROM personal_list WHERE userid = ? AND macroid = ?';
+
+    if (existingPersonalListSql.length > 0) {
+        return res.status(400).json({ message: 'Macro already in personal list' });
+    }
+
+
+    const sql = 'INSERT INTO personal_list (userid, macroid) VALUES (?, ?)';
+
+    try {
+        const [results] = await connection2.query(sql, [userId, macroid]);
+        res.status(201).json({ message: 'Macro added to personal list', listId: results.insertId });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error in adding macro to personal list' });
+    }
+});
+
 
 
 
