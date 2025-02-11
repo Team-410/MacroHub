@@ -104,8 +104,14 @@ router.post('/personal_list', async (req, res) => {
 
     const existingPersonalListSql = 'SELECT * FROM personal_list WHERE userid = ? AND macroid = ?';
 
-    if (existingPersonalListSql.length > 0) {
-        return res.status(400).json({ message: 'Macro already in personal list' });
+    try {
+        const [results] = await connection2.query(existingPersonalListSql, [userId, macroid]);
+        if (results.length > 0) {
+            return res.status(400).json({ message: 'Macro already in personal list' });
+        }
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error in checking personal list' });
     }
 
 
