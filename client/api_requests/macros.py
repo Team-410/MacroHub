@@ -1,7 +1,14 @@
 import requests
 import os
+from api_requests.token import get_token
+from dotenv import load_dotenv
 
-def fetch_personal_macros(token):
+load_dotenv()
+
+# Hae muuttujat
+API_BASE_URL = os.getenv("API_BASE_URL")
+
+def fetch_personal_macros():
     """
     Fetch the user's personal macro list from the backend.
     
@@ -16,8 +23,8 @@ def fetch_personal_macros(token):
     """
     try:
         response = requests.get(
-            f"{os.getenv('API_BASE_URL')}/personal_list",
-            headers={"Authorization": f"Bearer {token}"},
+            f"{os.getenv('API_BASE_URL')}/api/personal_list",
+            headers={"Authorization": f"Bearer {get_token()}"},
             timeout=10  # Add timeout for safety
         )
         
@@ -33,10 +40,13 @@ def fetch_personal_macros(token):
         
         # Parse the response
         data = response.json()
+        print(response.text)
+        macros = data.get("results", [])
+
         return {
             'success': True,
-            'macros': data.get('macros', []),
-            'count': data.get('count', 0)
+            'macros': macros,
+            'count': len(macros)
         }
         
     except requests.exceptions.RequestException as e:

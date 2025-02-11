@@ -100,7 +100,7 @@ function Macro() {
             ) : (
                 <Typography color="text.secondary">Log in to save macros to mylist</Typography>
             )}
-            <Button variant="contaided" sx={{ mt: 5, padding: 1 }} onClick={() => setShowMacro(show => !show)}>
+            <Button sx={{ mt: 5, padding: 1, color: '#fff' }} onClick={() => setShowMacro(show => !show)}>
                 {showMacro ? "Hide macro" : "Show macro"}
             </Button>
 

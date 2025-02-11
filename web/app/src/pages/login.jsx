@@ -44,12 +44,6 @@ const login = () => {
                 // Tallenna JWT localStorageen
                 localStorage.setItem("authToken", response.data.token);
 
-                // ✅ Store userId
-                localStorage.setItem("userId", response.data.userId);
-
-                // ✅ Log to verify it's stored
-                console.log("Stored userId:", response.data.userId);
-
                 // vittu mikä purkkaratkaisu, pitää korjata
                 setToken(response.data.token);
                 navigate('/');

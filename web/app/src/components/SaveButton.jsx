@@ -19,7 +19,7 @@ const SaveButton = ({ macroid, userId }) => {
     };
         
     return (
-        <Button onClick={handleSave}>Save to mylist</Button>
+        <Button variant="contained" sx={{ mt: 5, mr: 2, padding: 1 }} onClick={handleSave}>Save to my list</Button>
     );
 
 };

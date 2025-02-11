@@ -9,7 +9,6 @@ const VoteButton = ({ macroid, userId }) => {
     const [userVote, setUserVote] = useState(null);
 
     useEffect(() => {
-        if (!userId) return;
 
         axios.get(`http://localhost:5000/api/macro/${macroid}/votes`)
             .then(response => {
@@ -18,18 +17,43 @@ const VoteButton = ({ macroid, userId }) => {
                 setUserVote(response.data.userVote);
             })
             .catch(error => console.error("Error fetching votes:", error));
-    }, [macroid, userId, userVote]);
+    }, [macroid, userVote]);
 
     const handleVote = (type) => {
-        if (!userId) return alert("You need to log in to vote!");
-
-        axios.post(`http://localhost:5000/api/macro/${macroid}/vote`, { voteType: type, userId })
-            .then(response => {
-                setVotes(response.data.votes);
-                setUserVote(type);
-            })
-            .catch(error => console.error("Error voting:", error));
+        const token = localStorage.getItem('authToken');
+        console.log(token);
+        
+    
+        if (!token) {
+            alert("You need to log in to vote!");
+            return;
+        }
+    
+        if (!macroid) {
+            console.error("macroid is undefined!");
+            return;
+        }
+    
+        axios.post(
+            `http://localhost:5000/api/macro/${macroid}/vote`,
+            { voteType: type },
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+        .then(response => {
+            console.log("Vote successful:", response.data);
+            setVotes(response.data.votes);
+            setUserVote(type);
+        })
+        .catch(error => {
+            console.error("Error voting:", error);
+        });
     };
+    
+    
 
     return (
         <div className="vote-container">

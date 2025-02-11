@@ -3,13 +3,14 @@ from tkinter import messagebox
 from ttkthemes import ThemedTk
 from api_requests.macros import fetch_personal_macros
 
-def show_personal_macros(parent_window, token):
+def show_personal_macros(parent_window):
     """Display the user's personal macro list in a new window."""
     window = ThemedTk(theme="arc")
+    window.configure(bg='black')
     window.title("My Personal Macros")
     
     # Fetch macros from the backend
-    macros_data = fetch_personal_macros(token)
+    macros_data = fetch_personal_macros()
     
     if not macros_data.get('success'):
         messagebox.showerror("Error", macros_data.get('error', 'Failed to load macros'))

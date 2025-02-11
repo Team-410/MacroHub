@@ -1,5 +1,12 @@
 import express from 'express';
 import connection2 from '../connection.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+console.log(JWT_SECRET);
+
 
 
 const router = express.Router();
@@ -33,9 +40,23 @@ router.get("/macro/:macroid/votes", async (req, res) => {
 // Handle upvotes and downvotes
 router.post("/macro/:macroid/vote", async (req, res) => {
     const { macroid } = req.params;
-    const { voteType, userId } = req.body;
+    const { voteType } = req.body;
     const voteValue = voteType ;
+
+    const token = req.headers.authorization?.split(' ')[1];
     
+    if (!token) {
+        return res.status(400).json({ message: 'Token missing or malformed' });
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+    
+    const userId = decoded.userId;
 
     try {
         // Tarkistetaan, onko käyttäjä jo äänestänyt
@@ -64,5 +85,36 @@ router.post("/macro/:macroid/vote", async (req, res) => {
         res.status(500).json({ message: "Error processing vote" });
     }
 });
+
+router.post("/macro/:macroid/voted"), async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(400).json({ message: 'Token missing or malformed' });
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+    
+    const userid = decoded.userId;
+
+    const sql = 'SELECT * FROM vote WHERE userid = ?';
+
+    try {
+        const [results] = await connection2.query(sql, [userid]);
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Vote not found' });
+        }
+        res.status(200).json({ results });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error in retrieving vote' });
+    }
+
+}
 
 export default router;
