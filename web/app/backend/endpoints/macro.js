@@ -121,6 +121,41 @@ router.post('/personal_list', async (req, res) => {
     }
 });
 
+// GET-path to fetch personal list of macros
+router.get('/personal_list', apiLimiter, async (req, res) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+        return res.status(401).json({ message: 'Authorization required' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const userId = decoded.userId;
+
+        const [results] = await connection2.query(
+            `SELECT m.macroid, m.macroname, m.macrodescription, 
+                    m.category, m.macrotype, m.macro
+             FROM personal_list pl
+             JOIN macro m ON pl.macroid = m.macroid
+             WHERE pl.userid = ?`,
+            [userId]
+        );
+
+        res.status(200).json({
+            count: results.length,
+            macros: results
+        });
+        
+    } catch (err) {
+        console.error('Error:', err);
+        const status = err.name === 'TokenExpiredError' ? 401 : 500;
+        res.status(status).json({ 
+            message: err.message || 'Server error' 
+        });
+    }
+});
+
 
 
 
