@@ -122,7 +122,7 @@ router.post('/personal_list', async (req, res) => {
 });
 
 // GET-path to fetch personal list of macros
-router.get('/personal_list', apiLimiter, async (req, res) => {
+router.get('/personal_list', async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
     
     if (!token) {
