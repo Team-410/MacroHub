@@ -1,22 +1,23 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
 
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Card, CardContent } from "@mui/material";
 
 function PersonalList() {
     const [list, setList] = useState([]);
     const [, setLoading] = useState(true);
-    const [ ,setError] = useState(null);
+    const [, setError] = useState(null);
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
-    
+
         if (!token) {
             setError("Authentication token not found.");
             setLoading(false);
             return;
         }
-    
+
         axios
             .get("/api/personal_list", {
                 headers: {
@@ -40,16 +41,54 @@ function PersonalList() {
 
     return (
         <Box>
-            <Typography>Personal List</Typography>
-            {list && list.length > 0 ? (
-                <ul>
-                    {list.map((item, index) => (
-                        <li key={index}>{item.macroname}</li>
-                    ))}
-                </ul>
-            ) : (
-                <Typography>No items found.</Typography>
-            )}
+            <Typography sx={{ fontSize: '22px' }}>Personal List</Typography>
+            <Box
+                sx={{
+                    mt: 4,
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 2,
+                    justifyContent: "center",
+                }}
+            >
+                {list.map((item, index) => (
+                    <Card key={index} className="macrocard">
+                        <Link
+                            to={`/macro/${item.macroid}`}
+                            style={{
+                                textDecoration: "none",
+                                color: "inherit",
+                            }}
+                        >
+                            <CardContent
+                                sx={{
+                                    textAlign: "left",
+                                    overflow: "auto",
+                                    height: "100%",
+                                }}
+                            >
+                                <Typography variant="h6" component="div">
+                                    {item.macroname}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ mt: 1 }}
+                                >
+                                    Category: {item.category}
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{ mt: 1 }}
+                                >
+                                    {item.macrodescription}
+                                </Typography>
+                            </CardContent>
+                        </Link>
+                    </Card>
+                ))}
+            </Box>
         </Box>
     );
 }

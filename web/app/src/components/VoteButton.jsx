@@ -21,8 +21,6 @@ const VoteButton = ({ macroid, userId }) => {
 
     const handleVote = (type) => {
         const token = localStorage.getItem('authToken');
-        console.log(token);
-        
     
         if (!token) {
             alert("You need to log in to vote!");
