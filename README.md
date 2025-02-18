@@ -113,4 +113,9 @@ cd ./web/app/
 npm run dev
 ```
 
+### SWAGGER
+
+If backend is run locally, by default Swagger documentation is available at:
+[http://localhost:5000/swagger](http://localhost:5000/swagger)
+
 ---
