@@ -82,11 +82,22 @@ router.get('/personal_list', async (req, res) => {
 
 // POST-path to add macro to personal list (web client)
 router.post('/personal_list', async (req, res) => {
-    const { macroid, userId } = req.body;
+    const { macroid } = req.body;
 
-    if (!userId || isNaN(userId)) {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
         return res.status(400).json({ message: 'Token missing or malformed' });
     }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+    
+    const userid = decoded.userId;
 
     if (!macroid || isNaN(macroid)) {
         return res.status(400).json({ message: 'Invalid macro ID' });
@@ -105,7 +116,7 @@ router.post('/personal_list', async (req, res) => {
     const existingPersonalListSql = 'SELECT * FROM personal_list WHERE userid = ? AND macroid = ?';
 
     try {
-        const [results] = await connection2.query(existingPersonalListSql, [userId, macroid]);
+        const [results] = await connection2.query(existingPersonalListSql, [userid, macroid]);
         if (results.length > 0) {
             return res.status(400).json({ message: 'Macro already in personal list' });
         }
@@ -118,7 +129,7 @@ router.post('/personal_list', async (req, res) => {
     const sql = 'INSERT INTO personal_list (userid, macroid) VALUES (?, ?)';
 
     try {
-        const [results] = await connection2.query(sql, [userId, macroid]);
+        const [results] = await connection2.query(sql, [userid, macroid]);
         res.status(201).json({ message: 'Macro added to personal list', listId: results.insertId });
     } catch (err) {
         console.error(err);

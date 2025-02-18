@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button } from "@mui/material";
 
-const SaveButton = ({ macroid, userId }) => {
+const SaveButton = ({ macroid }) => {
+    const token = localStorage.getItem("authToken");
     const handleSave = () => {
-        if (!userId) return alert("You need to log in to save to mylist!");
-        axios.post(`http://localhost:5000/api/personal_list`, { macroid, userId })
+        if (!token) return alert("You need to log in to save to mylist!");
+        axios.post(`http://localhost:5000/api/personal_list`, { macroid }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
             .then(response => {
                 console.log(response);
+                alert(response.data.message)
             })
             .catch(error => {
                 if (error.response && error.response.status === 400 && error.response.data.message === "Macro already in personal list") {

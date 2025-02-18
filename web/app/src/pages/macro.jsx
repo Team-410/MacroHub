@@ -95,7 +95,7 @@ function Macro() {
             )}
             {currentUser ? (
                 <>
-                  <SaveButton macroid={macro.macroid} userId={currentUser.userId} />
+                  <SaveButton macroid={macro.macroid} />
                 </>
             ) : (
                 <Typography color="text.secondary">Log in to save macros to mylist</Typography>
