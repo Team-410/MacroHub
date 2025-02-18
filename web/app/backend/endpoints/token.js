@@ -7,6 +7,70 @@ import bcrypt from 'bcryptjs';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: Bearer authentication using JWT. Provide your Bearer token below.
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: The email of the user
+ *         password:
+ *           type: string
+ *           description: The password of the user
+ *         fullname:
+ *           type: string
+ *           description: The full name of the user
+ *     TokenResponse:
+ *       type: object
+ *       properties:
+ *         token:
+ *           type: string
+ *           description: The JWT token
+ *         userId:
+ *           type: integer
+ *           description: The ID of the user
+ *         email:
+ *           type: string
+ *           description: The email of the user
+ *         fullname:
+ *           type: string
+ *           description: The full name of the user
+ */
+
+/**
+ * @swagger
+ * /token/refresh:
+ *   get:
+ *     summary: Refresh the JWT token
+ *     tags: [Token]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Token refreshed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *       401:
+ *         description: Token missing or invalid
+ *       403:
+ *         description: Token expired or invalid
+ */
 // Validate token when view changes
 router.get("/token/refresh", (req, res) => {
     const authHeader = req.headers["authorization"];
@@ -38,6 +102,45 @@ router.get("/token/refresh", (req, res) => {
     });
 });
 
+/**
+ * @swagger
+ * /adduser:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The email of the user
+ *               password:
+ *                 type: string
+ *                 description: The password of the user
+ *               fullname:
+ *                 type: string
+ *                 description: The full name of the user
+ *     responses:
+ *       201:
+ *         description: User added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 userId:
+ *                   type: integer
+ *       400:
+ *         description: Invalid input
+ *       500:
+ *         description: Internal hashing or database error
+ */
 // POST-path to adding user (register)
 router.post('/adduser', async (req, res) => {
     console.log('Pyyntö tullut adduser-reitille', req.body);
@@ -73,6 +176,41 @@ router.post('/adduser', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login a user
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The email of the user
+ *               password:
+ *                 type: string
+ *                 description: The password of the user
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/TokenResponse'
+ *       400:
+ *         description: Fill all fields
+ *       401:
+ *         description: Check email or password
+ *       404:
+ *         description: Check email or password
+ *       500:
+ *         description: Error in login
+ */
 // POST-Path for login (login)
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;

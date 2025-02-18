@@ -11,6 +11,56 @@ console.log(JWT_SECRET);
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: Bearer authentication using JWT. Provide your Bearer token below.
+ *   schemas:
+ *     Vote:
+ *       type: object
+ *       properties:
+ *         macroid:
+ *           type: integer
+ *           description: The ID of the macro
+ *         upvotes:
+ *           type: integer
+ *           description: The number of upvotes
+ *         downvotes:
+ *           type: integer
+ *           description: The number of downvotes
+ *         total:
+ *           type: integer
+ *           description: The total votes
+ */
+
+/**
+ * @swagger
+ * /macro/{macroid}/votes:
+ *   get:
+ *     summary: Get total votes for a specific macro
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: macroid
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the macro
+ *     responses:
+ *       200:
+ *         description: Total votes retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Vote'
+ *       500:
+ *         description: Error retrieving votes
+ */
 // Get total votes for a specific macro
 router.get("/macro/:macroid/votes", async (req, res) => {
     const { macroid } = req.params;
@@ -37,6 +87,41 @@ router.get("/macro/:macroid/votes", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /macro/{macroid}/vote:
+ *   post:
+ *     summary: Handle upvotes and downvotes for a specific macro
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: macroid
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the macro
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               voteType:
+ *                 type: integer
+ *                 description: The type of vote (1 for upvote, 0 for downvote)
+ *     responses:
+ *       200:
+ *         description: Vote recorded successfully
+ *       400:
+ *         description: Token missing or malformed
+ *       401:
+ *         description: Invalid token
+ *       500:
+ *         description: Error processing vote
+ */
 // Handle upvotes and downvotes
 router.post("/macro/:macroid/vote", async (req, res) => {
     const { macroid } = req.params;
@@ -86,6 +171,34 @@ router.post("/macro/:macroid/vote", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /macro/{macroid}/voted:
+ *   post:
+ *     summary: Check if a user has voted for a specific macro
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: macroid
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the macro
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Vote found
+ *       400:
+ *         description: Token missing or malformed
+ *       401:
+ *         description: Invalid token
+ *       404:
+ *         description: Vote not found
+ *       500:
+ *         description: Error in retrieving vote
+ */
+// Check if a user has voted for a specific macro
 router.post("/macro/:macroid/voted"), async (req, res) => {
     const token = req.headers.authorization?.split(' ')[1];
 

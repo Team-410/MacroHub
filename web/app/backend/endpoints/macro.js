@@ -8,6 +8,59 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *       description: Bearer authentication using JWT. Provide your Bearer token below.
+ *   schemas:
+ *     Macro:
+ *       type: object
+ *       properties:
+ *         macroid:
+ *           type: integer
+ *           description: The ID of the macro
+ *         name:
+ *           type: string
+ *           description: The name of the macro
+ *         description:
+ *           type: string
+ *           description: The description of the macro
+ *     PersonalList:
+ *       type: object
+ *       properties:
+ *         userid:
+ *           type: integer
+ *           description: The ID of the user
+ *         macroid:
+ *           type: integer
+ *           description: The ID of the macro
+ */
+
+/**
+ * @swagger
+ * /macros:
+ *   get:
+ *     summary: Get all macros (marketplace)
+ *     tags: [Macros]
+ *     responses:
+ *       200:
+ *         description: List of macros
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Macro'
+ *       404:
+ *         description: Macros not found
+ *       500:
+ *         description: Error in retrieving macros
+ */
 // GET-path for all macros (marketplace)
 router.get('/macros', async (req, res) => {
     try {
@@ -24,6 +77,31 @@ router.get('/macros', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /macros/{id}:
+ *   get:
+ *     summary: Get one macro (macropage)
+ *     tags: [Macros]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the macro
+ *     responses:
+ *       200:
+ *         description: Macro found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Macro'
+ *       404:
+ *         description: Macro not found
+ *       500:
+ *         description: Error in retrieving macro
+ */
 // GET-path to get one macro (macropage)
 router.get('/macros/:id', async (req, res) => {
     const macroId = req.params.id;
@@ -48,6 +126,36 @@ router.get('/macros/:id', async (req, res) => {
         return res.status(500).json({ message: 'Error in retrieving macro' });
     }
 });
+
+/**
+ * @swagger
+ * /personal_list:
+ *   get:
+ *     summary: Get personal list (python client)
+ *     tags: [PersonalList]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the macro
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of personal macros
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/PersonalList'
+ *       404:
+ *         description: List not found
+ *       500:
+ *         description: Error in retrieving macros
+ */
 
 // GET-path to personal list (python client)
 router.get('/personal_list', async (req, res) => {
@@ -79,6 +187,32 @@ router.get('/personal_list', async (req, res) => {
         res.status(500).json({ message: 'Error in retrieving macros' });
     }
 });
+
+/**
+ * @swagger
+ * /personal_list:
+ *   post:
+ *     summary: Add a macro to personal list (web client)
+ *     tags: [PersonalList]
+ *     parameters:
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PersonalList'
+ *     responses:
+ *       201:
+ *         description: Macro added to personal list
+ *       400:
+ *         description: Token missing or malformed / Invalid macro ID / Macro already in personal list
+ *       404:
+ *         description: Macro ID not found
+ *       500:
+ *         description: Error in adding macro to personal list
+ */
 
 // POST-path to add macro to personal list (web client)
 router.post('/personal_list', async (req, res) => {

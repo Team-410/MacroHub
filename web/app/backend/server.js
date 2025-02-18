@@ -11,6 +11,7 @@ import vote from './endpoints/vote.js';
 import token from './endpoints/token.js';
 import macro from './endpoints/macro.js';
 import comment from './endpoints/comment.js';
+import swaggerSetup from './swagger.js';
 
 const app = express();
 app.use(cors());
@@ -64,6 +65,7 @@ app.use('/api', macro);
 // comments
 app.use('/api', comment);
 
+swaggerSetup(app);
 
 
 app.listen(5000, () => {
