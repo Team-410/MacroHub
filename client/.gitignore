@@ -1,3 +1,4 @@
 venv
 secret.txt
+credentials.json
 __pycache__
