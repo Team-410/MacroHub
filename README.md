@@ -57,7 +57,7 @@ erDiagram
     macro ||--o{ comment : "has"
 ```
 
-#### Class diagram
+### Class diagram
 ```mermaid
 classDiagram
     class user {
@@ -100,6 +100,35 @@ classDiagram
         +TEXT comment
         +TIMESTAMP timestamp
     }
+
+```
+###  Workflow
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant WebClient as Web Client
+    participant API
+    participant LocalClient as Local Python Client
+
+    User->>WebClient: Log in
+    WebClient->>API: Authenticate user
+    API-->>WebClient: Return auth token
+
+    User->>WebClient: Browse macros
+    WebClient->>API: Request macros
+    API-->>WebClient: Send macro list
+
+    User->>WebClient: Save macro to personal list
+    WebClient->>API: Store macro in user’s personal list
+    API-->>WebClient: Confirm save
+
+    User->>LocalClient: Open local client
+    LocalClient->>API: Request user’s personal macros
+    API-->>LocalClient: Send personal macros
+
+    User->>LocalClient: Edit and save macros
+    LocalClient->>API: Update personal macros
+    API-->>LocalClient: Confirm changes
 
 ```
 
