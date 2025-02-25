@@ -1,11 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 import threading
-from functions.key_mapping import map_key_for_display, map_display_to_key
-from functions.macro_operations import run_macro
-from functions.gui_components import add_step, update_table, delete_step, save_macro, load_macro
-from functions.hotkey_listener import toggle_macro, start_listener, change_hotkey
-from functions.persistent_keys import add_persistent_key, delete_persistent_key, update_persistent_keys_display
+from functions.gui_components import add_step, delete_step, save_macro, load_macro
+from functions.hotkey_listener import start_listener, change_hotkey
+from functions.persistent_keys import add_persistent_key, delete_persistent_key
 
 # Initialize the main window
 root = tk.Tk()
@@ -39,7 +37,7 @@ ttk.Label(input_frame, text="Hold Time (s):").grid(row=2, column=0, padx=5, pady
 hold_time_entry = ttk.Entry(input_frame, width=20)
 hold_time_entry.grid(row=2, column=1, padx=5, pady=5)
 
-add_button = ttk.Button(input_frame, text="Add Step", command=add_step)
+add_button = ttk.Button(input_frame, text="Add Step", command=add_step(key_entry, hold_time_entry))
 add_button.grid(row=3, column=0, columnspan=2, pady=5)
 
 # Table for macro steps
@@ -64,7 +62,7 @@ table.configure(yscrollcommand=scrollbar.set)
 control_frame = ttk.Frame(input_frame)
 control_frame.grid(row=5, column=0, columnspan=2, pady=10)
 
-delete_button = ttk.Button(control_frame, text="Delete Step", command=delete_step)
+delete_button = ttk.Button(control_frame, text="Delete Step", command=delete_step(table))
 delete_button.grid(row=0, column=0, padx=5)
 
 save_button = ttk.Button(control_frame, text="Save Macro", command=save_macro)

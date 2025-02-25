@@ -1,5 +1,4 @@
 from pynput.keyboard import Key
-from create_macro import *
 
 # Function to map key names for user display
 def map_key_for_display(key):

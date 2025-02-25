@@ -2,12 +2,11 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import json
 import os
-from .key_mapping import map_key_for_display
-from .macro_operations import run_macro
-from create_macro import *
+from functions.key_mapping import map_key_for_display
+#from functions.macro_operations import update_persistent_keys_display
 
 # Add macro step to the table
-def add_step():
+def add_step(key_entry, hold_time_entry):
     keys = key_entry.get()
     hold_time = hold_time_entry.get()
     if not keys or not hold_time:
@@ -22,14 +21,14 @@ def add_step():
         messagebox.showerror("Error", "Hold time must be a number.")
 
 # Update the table display
-def update_table():
+def update_table(table):
     for row in table.get_children():
         table.delete(row)
     for i, step in enumerate(macro_steps):
         table.insert("", "end", values=(i + 1, step['keys'], step['hold_time']))
 
 # Delete selected step
-def delete_step():
+def delete_step(table):
     selected_item = table.selection()
     if not selected_item:
         messagebox.showerror("Error", "Select a step to delete.")
@@ -71,7 +70,7 @@ def load_macro():
                 macro_steps = macro_data.get("steps", [])
                 persistent_keys = macro_data.get("persistent_keys", [])
             update_table()
-            update_persistent_keys_display()
+            #update_persistent_keys_display()
             messagebox.showinfo("Loaded", f"Macro loaded from {filename}.")
         except Exception as e:
             messagebox.showerror("Error", f"Error loading macro: {e}")

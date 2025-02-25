@@ -40,8 +40,8 @@ function PersonalList() {
     }, []);
 
     return (
-        <Box>
-            <Typography sx={{ fontSize: '22px' }}>Personal List</Typography>
+        <Box sx={{ mt: 12, padding: 1}}>
+            <Typography sx={{ fontSize: '22px', textAlign: 'center' }}>Personal List</Typography>
             <Box
                 sx={{
                     mt: 4,

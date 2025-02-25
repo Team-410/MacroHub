@@ -2,8 +2,7 @@ import time
 import random
 from pynput.keyboard import Controller, Key
 from tkinter import messagebox
-from .key_mapping import map_display_to_key
-from create_macro import *
+from functions.key_mapping import map_display_to_key
 
 # Function to run the macro with Looping and Humanization
 def run_macro(steps, persistent_keys, stop_event, loop=False, humanization=False):

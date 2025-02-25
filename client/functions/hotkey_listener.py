@@ -1,7 +1,6 @@
 import threading
 from pynput import keyboard
-from .macro_operations import run_macro
-from create_macro import *
+from functions.macro_operations import run_macro
 
 # Start/Stop toggle listener
 def toggle_macro(key):

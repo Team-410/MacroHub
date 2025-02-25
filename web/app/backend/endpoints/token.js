@@ -95,7 +95,7 @@ router.get("/token/refresh", (req, res) => {
                 role: user.role
             },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '48h' }
         );
 
         res.json({ message: "Token päivitetty!", token: newToken });
@@ -243,7 +243,7 @@ router.post('/login', async (req, res) => {
                 role: user.role
             },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '48h' }
         );
 
         console.log("Login successful:", { userId: user.userid, email: user.email });

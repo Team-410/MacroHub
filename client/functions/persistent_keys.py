@@ -1,7 +1,7 @@
-from .key_mapping import map_key_for_display
-from create_macro import *
+from functions.key_mapping import map_key_for_display
 from tkinter import messagebox
 
+""""
 def add_persistent_key():
     key = persistent_key_entry.get()
     if not key:
@@ -24,7 +24,9 @@ def delete_persistent_key():
 
     persistent_keys.remove(selected_key)
     update_persistent_keys_display()  # Update the display after deleting the key
+    """
 
+""""
 def update_persistent_keys_display():
     # Update the label with the current persistent keys
     persistent_keys_label.config(text=f"Persistent Keys: {', '.join(persistent_keys) if persistent_keys else 'None'}")
@@ -38,3 +40,4 @@ def update_persistent_keys_display():
     else:
         # If no persistent keys, clear the dropdown value
         persistent_key_dropdown.set("")
+"""
