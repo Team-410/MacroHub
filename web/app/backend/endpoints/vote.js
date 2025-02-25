@@ -66,11 +66,13 @@ router.get("/macro/:macroid/votes", async (req, res) => {
     const { macroid } = req.params;
 
     try {
+        // Hae upvote-määrä
         const [[{ upcount }]] = await connection2.query(
             "SELECT COUNT(*) AS upcount FROM vote WHERE macroid = ? AND vote = 1",
             [macroid]
         );    
 
+        // Hae downvote-määrä
         const [[{ downcount }]] = await connection2.query(
             "SELECT COUNT(*) AS downcount FROM vote WHERE macroid = ? AND vote = 0",
             [macroid]
@@ -120,14 +122,15 @@ router.get("/macro/:macroid/votes", async (req, res) => {
  *       500:
  *         description: Error processing vote
  */
-// Handle upvotes, downvotes, and removing votes
+// Handle upvotes and downvotes
 router.post("/macro/:macroid/vote", async (req, res) => {
     const { macroid } = req.params;
     const { voteType } = req.body;
+    const voteValue = voteType ;
+
     const token = req.headers.authorization?.split(' ')[1];
     
     if (!token) {
-        console.log('Token missing or malformed');
         return res.status(400).json({ message: 'Token missing or malformed' });
     }
 
@@ -135,48 +138,35 @@ router.post("/macro/:macroid/vote", async (req, res) => {
     try {
         decoded = jwt.verify(token, JWT_SECRET);
     } catch (err) {
-        console.log('Invalid token:', err);
         return res.status(401).json({ message: 'Invalid token' });
     }
     
     const userId = decoded.userId;
 
     try {
-        // Check if the user has already voted
+        // Tarkistetaan, onko käyttäjä jo äänestänyt
         const [existingVote] = await connection2.query(
             "SELECT * FROM vote WHERE userid = ? AND macroid = ?",
             [userId, macroid]
         );
 
         if (existingVote.length > 0) {
-            if (voteType === null) {
-                // User wants to remove their vote
-                await connection2.query(
-                    "DELETE FROM vote WHERE userid = ? AND macroid = ?",
-                    [userId, macroid]
-                );
-                console.log(`Vote removed for user ${userId} on macro ${macroid}`);
-                res.status(200).json({ message: "Vote removed successfully", vote: null });
-            } else {
-                // User has already voted, update the vote
-                await connection2.query(
-                    "UPDATE vote SET vote = ? WHERE userid = ? AND macroid = ?",
-                    [voteType, userId, macroid]
-                );
-                console.log(`Vote updated to ${voteType} for user ${userId} on macro ${macroid}`);
-                res.status(200).json({ message: "Vote updated successfully", vote: voteType });
-            }
+            // Käyttäjä on jo äänestänyt, päivitetään ääni
+            await connection2.query(
+                "UPDATE vote SET vote = ? WHERE userid = ? AND macroid = ?",
+                [voteValue, userId, macroid]
+            );
         } else {
-            // User has not voted yet, insert a new vote
+            // Käyttäjä ei ole vielä äänestänyt, lisätään uusi ääni
             await connection2.query(
                 "INSERT INTO vote (userid, macroid, vote) VALUES (?, ?, ?)",
-                [userId, macroid, voteType]
+                [userId, macroid, voteValue]
             );
-            console.log(`Vote recorded as ${voteType} for user ${userId} on macro ${macroid}`);
-            res.status(200).json({ message: "Vote recorded successfully", vote: voteType });
         }
+
+        res.status(200).json({ message: "Vote recorded successfully" });
     } catch (err) {
-        console.error('Error processing vote:', err);
+        console.error(err);
         res.status(500).json({ message: "Error processing vote" });
     }
 });
