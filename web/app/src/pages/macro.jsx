@@ -16,15 +16,14 @@ function Macro() {
     const [error, setError] = useState(null);
     const [animation, setAnimation] = useState(false);
     const [showMacro, setShowMacro] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null); // Track logged-in user
+    const [logged, setLogged] = useState(false);
 
     useEffect(() => {
 
         // Load logged-in user from localStorage
-        const storedUserId = localStorage.getItem("userId");
-        console.log("Stored userId:", storedUserId);
-        if (storedUserId) {
-            setCurrentUser({ userId: storedUserId });
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            setLogged(true);
         }
         
         axios.get(`/api/macros/${id}`)
@@ -85,15 +84,14 @@ function Macro() {
             <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
                 Download date: {formatTimestamp(macro.timestamp)}
             </Typography>
-            {currentUser ? (
+            {logged ? (
                 <>
-                    {console.log(`Rendering VoteButton for Macro ID: ${macro.macroid}, User ID: ${currentUser.userId}`)}
-                    <VoteButton macroid={macro.macroid} userId={currentUser.userId} />
+                    <VoteButton macroid={macro.macroid} />
                 </>
             ) : (
                 <Typography color="text.secondary">Log in to vote</Typography>
             )}
-            {currentUser ? (
+            {logged ? (
                 <>
                   <SaveButton macroid={macro.macroid} />
                 </>

@@ -1,12 +1,15 @@
 .vote-container {
+    background-color: #2b2828;
     display: flex;
     align-items: center;
+    padding: 5px 0;
+    border-radius: 5px;
     margin: 20px 0 -20px 0;
     font-family: Arial, sans-serif;
 }
 
 .vote-button {
-    padding: 0!important;
+    padding: 8px!important;
     margin: 0 20px 0 0;
     background: none;
     font-size: 24px;
@@ -15,6 +18,11 @@
     color: #888;
     cursor: pointer;
     transition: color 0.2s ease;
+}
+
+.active {
+    color: rgb(68, 68, 158);
+    pointer-events: none;
 }
 
 .downvote {
@@ -26,7 +34,15 @@
 }
 
 .vote-count {
+    transform: translateY(-10px);
+    opacity: 0;
     font-size: 18px;
     font-weight: bold;
     margin: 4px 0;
+    transition: all 0.5s ease;
+}
+
+.vote-animate {
+    opacity: 1;
+    transform: translateY(0px);
 }

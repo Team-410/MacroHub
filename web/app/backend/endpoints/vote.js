@@ -66,13 +66,11 @@ router.get("/macro/:macroid/votes", async (req, res) => {
     const { macroid } = req.params;
 
     try {
-        // Hae upvote-määrä
         const [[{ upcount }]] = await connection2.query(
             "SELECT COUNT(*) AS upcount FROM vote WHERE macroid = ? AND vote = 1",
             [macroid]
         );    
 
-        // Hae downvote-määrä
         const [[{ downcount }]] = await connection2.query(
             "SELECT COUNT(*) AS downcount FROM vote WHERE macroid = ? AND vote = 0",
             [macroid]
@@ -84,6 +82,78 @@ router.get("/macro/:macroid/votes", async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Error retrieving votes" });
+    }
+});
+
+// Get Users macrovotes
+router.get("/macro/:macroid/uservote", async (req, res) => {
+    const { macroid } = req.params;
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+        return res.status(400).json({ message: 'Token missing or malformed' });
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET)
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    const userId = decoded.userId;
+
+    try {
+        const [existingVote] = await connection2.query(
+            "SELECT * FROM vote WHERE userid = ? AND macroid = ?",
+            [userId, macroid]
+        );
+    
+        const userVote = existingVote.length > 0 ? existingVote[0].vote : null;
+    
+        console.log("User vote:", userVote);
+    
+        res.status(200).json({ userVote });
+    } catch (err) {
+        console.error("Error getting vote:", err);
+        res.status(500).json({ message: "Error getting vote" });
+    }
+    
+});
+
+// Delete users macrovotes
+router.delete("/macro/:macroid/uservote/remove", async (req, res) => {
+    const { macroid } = req.params;
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    if (!token) {
+        return res.status(400).json({ message: 'Token missing or malformed' });
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET)
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    const userId = decoded.userId;
+
+    try {
+        const [removeVote] = await connection2.query(
+            "DELETE  FROM vote WHERE userid = ? AND macroid = ?",
+            [userId, macroid]
+        );
+
+        if (removeVote.affectedRows > 0) {
+            return res.status(200).json({ message: 'Vote deleted' });
+        } else {
+            return res.status(404).json({ message: "No vote found for this user and macro" });
+        }
+
+    }  catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error deleting vote" });
     }
 });
 
@@ -122,6 +192,7 @@ router.get("/macro/:macroid/votes", async (req, res) => {
  *       500:
  *         description: Error processing vote
  */
+
 // Handle upvotes and downvotes
 router.post("/macro/:macroid/vote", async (req, res) => {
     const { macroid } = req.params;
@@ -144,20 +215,17 @@ router.post("/macro/:macroid/vote", async (req, res) => {
     const userId = decoded.userId;
 
     try {
-        // Tarkistetaan, onko käyttäjä jo äänestänyt
         const [existingVote] = await connection2.query(
             "SELECT * FROM vote WHERE userid = ? AND macroid = ?",
             [userId, macroid]
         );
 
         if (existingVote.length > 0) {
-            // Käyttäjä on jo äänestänyt, päivitetään ääni
             await connection2.query(
                 "UPDATE vote SET vote = ? WHERE userid = ? AND macroid = ?",
                 [voteValue, userId, macroid]
             );
         } else {
-            // Käyttäjä ei ole vielä äänestänyt, lisätään uusi ääni
             await connection2.query(
                 "INSERT INTO vote (userid, macroid, vote) VALUES (?, ?, ?)",
                 [userId, macroid, voteValue]

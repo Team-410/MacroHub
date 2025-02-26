@@ -10,6 +10,7 @@ const theme = createTheme({
         },
         background: {
             default: "#181818",
+            lighter: "#2b2828",
         },
         accent: {
             main: "#f9f9f9",

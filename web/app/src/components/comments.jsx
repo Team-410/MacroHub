@@ -18,7 +18,6 @@ const Comments = () => {
             try {
                 const response = await axios.get(`/api/macros/${id}/comments`);
                 setComments(response.data.results);
-                console.log(response);
             } catch (err) {
                 setError(err.response ? err.response.data.message : err.message);
             } finally {
