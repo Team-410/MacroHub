@@ -40,7 +40,6 @@ def fetch_personal_macros():
         
         # Parse the response
         data = response.json()
-        print(response.text)
         macros = data.get("results", [])
 
         return {

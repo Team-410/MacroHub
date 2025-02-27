@@ -77,7 +77,7 @@ router.get("/token/refresh", (req, res) => {
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
-        return res.status(401).json({ error: "Token puuttuu" });
+        return res.status(401).json({ error: "Token missing" });
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
@@ -98,7 +98,25 @@ router.get("/token/refresh", (req, res) => {
             { expiresIn: '48h' }
         );
 
-        res.json({ message: "Token päivitetty!", token: newToken });
+        res.json({ message: "Token refreshed!", token: newToken });
+    });
+});
+
+router.get("/token/userinfo", (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({ error: "Token missing" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: "Token ei kelpaa" });
+        }
+
+        console.log("User details from token:", user);
+        res.json({ user });
     });
 });
 

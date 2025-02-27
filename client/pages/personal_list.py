@@ -1,7 +1,7 @@
 from tkinter import ttk, messagebox
 from ttkthemes import ThemedTk
 from api_requests.macros import fetch_personal_macros
-from jwt_decrypt import jwt_decrypt
+from api_requests.user import get_user_info
 from pages.macropage import show_macro_details
 
 import tkinter as tk
@@ -18,7 +18,7 @@ def show_personal_macros(parent_window):
     window.configure(bg='black')
     window.title("My Personal Macros")
 
-    user_data = jwt_decrypt()
+    user_data = get_user_info()
     fullname = user_data.get("fullname", "Unknown User") if user_data else "Unknown User"
 
     # Fetch macros from the backend

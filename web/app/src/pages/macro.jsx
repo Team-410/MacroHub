@@ -56,54 +56,74 @@ function Macro() {
     }
 
     return (
-        <Box sx={{ padding: 1, maxWidth: 500, }}>
+        <Box sx={{ padding: 1, maxWidth: 500 }}>
             <Backbutton></Backbutton>
-            <Typography variant="h4" gutterBottom sx={{
+            <Typography
+                variant="h4"
+                gutterBottom
+                sx={{
                     opacity: animation ? 1 : 0,
-                    transform: animation ? 'translateY(0)' : 'translateY(-50px)',
-                    transition: 'all 0.8s ease-out',
-                }}>
+                    transform: animation
+                        ? "translateY(0)"
+                        : "translateY(-50px)",
+                    transition: "all 0.8s ease-out",
+                }}
+            >
                 {macro.macroname}
             </Typography>
-            <Typography variant="body1" gutterBottom sx={{
+            <Typography
+                variant="body1"
+                gutterBottom
+                sx={{
                     opacity: animation ? 1 : 0,
-                    transform: animation ? 'translateY(0)' : 'translateY(-50px)',
-                    transition: 'all 0.8s ease-out',
-                }}>
+                    transform: animation
+                        ? "translateY(0)"
+                        : "translateY(-50px)",
+                    transition: "all 0.8s ease-out",
+                }}
+            >
                 {macro.app}
             </Typography>
-            <Typography variant="body1" sx={{ mt: 2, color: 'text.secondary' }}>
+            <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
                 {macro.macrodescription}
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
                 Category: {macro.category}
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
                 Macro type: {macro.macrotype}
             </Typography>
-            <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
                 Download date: {formatTimestamp(macro.timestamp)}
             </Typography>
             {logged ? (
                 <>
                     <VoteButton macroid={macro.macroid} />
+                    <SaveButton macroid={macro.macroid} />
                 </>
             ) : (
-                <Typography color="text.secondary">Log in to vote</Typography>
-            )}
-            {logged ? (
                 <>
-                  <SaveButton macroid={macro.macroid} />
+                    <Typography
+                        color="text.secondary"
+                        sx={{ mt: 1 }}
+                    >
+                        Log in to vote and save macros
+                    </Typography>
                 </>
-            ) : (
-                <Typography color="text.secondary">Log in to save macros to mylist</Typography>
             )}
-            <Button sx={{ mt: 5, padding: 1, color: '#fff' }} onClick={() => setShowMacro(show => !show)}>
+
+            <Button
+                sx={{ mt: 5, padding: 1, color: "#fff" }}
+                onClick={() => setShowMacro((show) => !show)}
+            >
                 {showMacro ? "Hide macro" : "Show macro"}
             </Button>
 
             {showMacro && (
-                <Typography variant="body2" sx={{ mt: 2, color: 'text.secondary' }}>
+                <Typography
+                    variant="body2"
+                    sx={{ mt: 2, color: "text.secondary" }}
+                >
                     {macro.macro}
                 </Typography>
             )}
