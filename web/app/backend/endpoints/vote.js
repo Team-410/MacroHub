@@ -85,6 +85,40 @@ router.get("/macro/:macroid/votes", async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /macro/{macroid}/uservote:
+ *   get:
+ *     summary: Get user's vote for a specific macro
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: macroid
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the macro
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User vote retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 userVote:
+ *                   type: integer
+ *                   description: The user's vote (1 for upvote, 0 for downvote, null if no vote)
+ *       400:
+ *         description: Token missing or malformed
+ *       401:
+ *         description: Invalid token
+ *       500:
+ *         description: Error getting vote
+ */
+
 // Get Users macrovotes
 router.get("/macro/:macroid/uservote", async (req, res) => {
     const { macroid } = req.params;
@@ -121,6 +155,33 @@ router.get("/macro/:macroid/uservote", async (req, res) => {
     
 });
 
+/**
+ * @swagger
+ * /macro/{macroid}/uservote/remove:
+ *   delete:
+ *     summary: Delete user's vote for a specific macro
+ *     tags: [Votes]
+ *     parameters:
+ *       - in: path
+ *         name: macroid
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the macro
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Vote deleted successfully
+ *       400:
+ *         description: Token missing or malformed
+ *       401:
+ *         description: Invalid token
+ *       404:
+ *         description: No vote found for this user and macro
+ *       500:
+ *         description: Error deleting vote
+ */
 // Delete users macrovotes
 router.delete("/macro/:macroid/uservote/remove", async (req, res) => {
     const { macroid } = req.params;
