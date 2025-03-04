@@ -8,6 +8,8 @@ from .keyboard_listener import KeyboardListener
 from .macro_runner import MacroRunner
 from .macro_recorder import MacroRecorder
 
+from api_requests.save_macro_api import save_macro
+
 class MainWindow:
     def __init__(self):
         self.root = tk.Tk()
@@ -54,6 +56,17 @@ class MainWindow:
         # Recording button below the table
         self.record_button = ttk.Button(self.middle_frame, text="Start Recording", command=self.toggle_recording)
         self.record_button.grid(row=2, column=0, pady=10)
+
+        # Luo olio
+        macro = MacroRunner(self.macro_steps, self.persistent_keys, self.stop_event)
+        self.save_button = ttk.Button(
+            self.left_frame, 
+            text="Save", 
+            command=lambda: save_macro(macro)
+        )
+
+        self.save_button.grid(row=2, column=0, pady=10)
+
 
         # Manual step addition below the recording button
         self.manual_frame = ttk.Frame(self.middle_frame)

@@ -10,6 +10,12 @@ class MacroRunner:
         self.stop_event = stop_event
         self.keyboard_controller = Controller()
 
+    def to_dict(self):
+        return {
+            "macro_steps": self.macro_steps,
+            "persistent_keys": self.persistent_keys
+        }
+
     def run_macro(self, loop=False, humanization=False):
         persistent_keys_pressed = []
         try:

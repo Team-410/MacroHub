@@ -271,5 +271,41 @@ router.post('/personal_list', async (req, res) => {
     }
 });
 
+// POST-path to add macro (python client)
+router.post('/save_macro', async (req, res) => {
+    const { macro } = req.body;
+
+    console.log(macro, "from python client");
+
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(400).json({ message: 'Token missing or malformed' });
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+    
+    const userid = decoded.userId;
+
+    if (isNaN(userid)) {
+        return res.status(400).json({ message: 'Invalid userid' });
+    }
+
+    const addMacro = 'INSERT INTO FROM macro macroname, macrodescription, app, category, macrotype, macro VALUES (?, ?, ?, ?, ?, ?)';
+
+    try {
+        const [results] = await connection2.query(addMacro, [macro.macroname, macro.macrodescription, macro.app, macro.category, macro.macrotype, macro.macro]);
+        res.status(201).json({ message: 'Macro added', listId: results.insertId });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error in  adding macro' });
+    }
+});
+
 
 export default router;
