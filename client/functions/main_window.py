@@ -52,8 +52,7 @@ class MainWindow:
 
         # Table for macro steps
         self.table_manager = TableManager(self.middle_frame, self.macro_steps)
-
-        # Recording button below the table
+    
         self.record_button = ttk.Button(self.middle_frame, text="Start Recording", command=self.toggle_recording)
         self.record_button.grid(row=2, column=0, pady=10)
 
@@ -141,30 +140,6 @@ class MainWindow:
     def change_hotkey(self, new_hotkey):
         self.current_hotkey = new_hotkey
         self.hotkey_manager.update_hotkey_label(new_hotkey)
-
-    def add_step(self):
-        keys = self.key_entry.get()
-        hold_time = self.hold_time_entry.get()
-        if not keys or not hold_time:
-            messagebox.showerror("Error", "Both fields are required.")
-            return
-
-        try:
-            float(hold_time)  # Validate hold time
-            self.macro_steps.append({'keys': keys, 'hold_time': hold_time})
-            self.table_manager.update_table()
-        except ValueError:
-            messagebox.showerror("Error", "Hold time must be a number.")
-
-    def delete_step(self):
-        selected_item = self.table_manager.table.selection()
-        if not selected_item:
-            messagebox.showerror("Error", "Select a step to delete.")
-            return
-
-        index = self.table_manager.table.index(selected_item[0])
-        del self.macro_steps[index]
-        self.table_manager.update_table()
 
     def run(self):
         self.root.mainloop()

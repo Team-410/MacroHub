@@ -46,6 +46,9 @@ class TableManager:
         self.add_button = ttk.Button(self.input_frame, text="Add Step", command=self.add_step)
         self.add_button.grid(row=2, column=0, columnspan=2, pady=5)
 
+        self.delete_button = ttk.Button(self.input_frame, text="Delete Step", command=self.delete_step)
+        self.delete_button.grid(row=3, column=0, columnspan=2, pady=5)
+
     def add_step(self):
         keys = self.key_entry.get()
         hold_time = self.hold_time_entry.get()
@@ -61,7 +64,25 @@ class TableManager:
             messagebox.showerror("Error", "Hold time must be a number.")
 
     def update_table(self):
+        """Update the table to reflect the current state of the macro_steps list."""
         for row in self.table.get_children():
             self.table.delete(row)
         for i, step in enumerate(self.macro_steps):
             self.table.insert("", "end", values=(i + 1, step['keys'], step['hold_time']))
+
+    def delete_step(self):
+        """Deletes the selected step from the macro_steps and updates the table."""
+        selected_item = self.table.selection()
+        if not selected_item:
+            messagebox.showerror("Error", "Select a step to delete.")
+            return
+
+        # Get the step number (from the first column in the selected row)
+        step_number = self.table.item(selected_item[0], "values")[0]
+        step_index = int(step_number) - 1  # Convert to zero-indexed
+
+        # Remove the selected step from the macro_steps list
+        del self.macro_steps[step_index]
+
+        # Update the table to reflect the changes
+        self.update_table()
