@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * @swagger
  * components:
- *  securitySchemes:
+ *   securitySchemes:
  *     bearerAuth:
  *       type: http
  *       scheme: bearer
