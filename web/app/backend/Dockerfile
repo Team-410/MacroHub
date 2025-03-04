@@ -5,7 +5,7 @@ FROM node:18
 WORKDIR /app/backend
 
 # Kopioidaan backendin package.json ja package-lock.json
-COPY backend/package*.json ./
+COPY package*.json ./
 
 # Asennetaan riippuvuudet
 RUN npm install
