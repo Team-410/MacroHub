@@ -2,19 +2,19 @@
 FROM node:18
 
 # Määritetään työskentelykansio kontissa
-WORKDIR /app/backend
+WORKDIR /app
 
 # Kopioidaan backendin package.json ja package-lock.json
-COPY package*.json ./
+COPY backend/package*.json ./backend/
 
 # Asennetaan riippuvuudet
-RUN npm install
+RUN cd backend && npm install
 
 # Kopioidaan vain backend-hakemisto
-COPY backend/ ./
+COPY backend/ ./backend/
 
 # Portti, jossa sovellus toimii
 EXPOSE 5000
 
 # Käynnistetään sovellus
-CMD ["node", "server.js"]
+CMD ["node", "backend/server.js"]
