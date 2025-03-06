@@ -6,6 +6,8 @@ const TokenRefresh = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+
     useEffect(() => {
         const refreshAuthToken = async () => {
             const oldToken = localStorage.getItem("authToken");
@@ -13,7 +15,7 @@ const TokenRefresh = ({ children }) => {
             if (!oldToken) return;
 
             try {
-                const response = await axios.get("/api/token/refresh", {
+                const response = await axios.get(`${API_URL}/api/token/refresh`, {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${oldToken}`,
