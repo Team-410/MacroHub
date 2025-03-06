@@ -3,10 +3,12 @@ import axios from "axios";
 import { Button } from "@mui/material";
 
 const SaveButton = ({ macroid }) => {
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+    
     const token = localStorage.getItem("authToken");
     const handleSave = () => {
         if (!token) return alert("You need to log in to save to mylist!");
-        axios.post(`http://localhost:5000/api/personal_list`, { macroid }, {
+        axios.post(`${API_URL}/api/personal_list`, { macroid }, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

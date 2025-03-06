@@ -14,6 +14,8 @@ import {
 
 const login = () => {
 
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+
     const navigate = useNavigate();
     const [token, setToken] = useState(localStorage.getItem('authToken'));
 
@@ -31,7 +33,7 @@ const login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post("/api/login", formData, {
+            const response = await axios.post(`${API_URL}/api/login`, formData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -39,10 +41,10 @@ const login = () => {
 
             if (response.status === 200) {
                 console.log("Kirjautuminen onnistui:", response);
-                alert("Kirjautuminen onnistui!");
+                alert("Login succesful!");
 
-                // Tallenna JWT localStorageen
                 localStorage.setItem("authToken", response.data.token);
+                localStorage.setItem("fullname", response.data.fullname);
 
                 // vittu mikä purkkaratkaisu, pitää korjata
                 setToken(response.data.token);

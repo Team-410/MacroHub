@@ -15,7 +15,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
-// Luo __dirname vastaava muuttuja
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -41,7 +40,6 @@ connection.connect((err) => {
     }
     console.log('DB connected');
 
-    // run sql create commands
     const sqlCommands = sqlScript.split(';').map(command => command.trim()).filter(command => command.length > 0);
 
     sqlCommands.forEach((command) => {
@@ -74,6 +72,6 @@ app.use('/api', comment);
 swaggerSetup(app);
 
 
-app.listen(5000, () => {
-    console.log('Server using port 5000');
+app.listen(process.env.SERVER_PORT, () => {
+    console.log('Server using port ' + process.env.SERVER_PORT);
 });

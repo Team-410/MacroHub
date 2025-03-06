@@ -10,6 +10,8 @@ import SaveButton from "../components/SaveButton";
 import Comments from "../components/comments";
 
 function Macro() {
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+
     const { id } = useParams();
     const [macro, setMacro] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -20,13 +22,12 @@ function Macro() {
 
     useEffect(() => {
 
-        // Load logged-in user from localStorage
         const token = localStorage.getItem("authToken");
         if (token) {
             setLogged(true);
         }
         
-        axios.get(`/api/macros/${id}`)
+        axios.get(`${API_URL}/api/macros/${id}`)
             .then(response => {
                 if (response.data.macro) {
                     setMacro(response.data.macro);

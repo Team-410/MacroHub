@@ -4,6 +4,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { Typography, Box, Button, Card, CardContent } from '@mui/material';
 import axios from 'axios';
 
+import Footer from '../components/footer';
+
 
 import '../style/home.css';
 
@@ -12,12 +14,13 @@ function HomePage() {
     const [macros, setMacros] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+
 
     useEffect(() => {
         setShowText(true);
 
-        // Haetaan makrot API:sta
-        axios.get('/api/macros')
+        axios.get(`${API_URL}/api/macros`)
             .then(response => {
                 setMacros(response.data.macros);
             })
@@ -155,6 +158,7 @@ function HomePage() {
                     ))}
                 </Box>
             )}
+            <Footer></Footer>
         </Box>
     );
 }
