@@ -72,6 +72,6 @@ app.use('/api', comment);
 swaggerSetup(app);
 
 
-app.listen(process.env.SERVER_PORT, () => {
+app.listen(process.env.SERVER_PORT, '0.0.0.0', () => {
     console.log('Server using port ' + process.env.SERVER_PORT);
 });
