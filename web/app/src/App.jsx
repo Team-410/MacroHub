@@ -15,6 +15,8 @@ import Home from "./pages/home";
 import About from "./pages/about";
 import Macro from "./pages/macro";
 import PersonalList from "./pages/personalList";
+import Marketplace from "./pages/marketplace";
+import MacroApp from "./pages/macroApp";
 
 function App() {
     return (
@@ -31,6 +33,8 @@ function App() {
                         <Route path="/macro/:id" element={<Macro />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/personalList" element={<PersonalList />} />
+                        <Route path="/marketplace" element={<Marketplace />} />
+                        <Route path="marketplace/app/:appCategory" element={<MacroApp />} />
                     </Routes>
                 </TokenRefresh>
             </ThemeProvider>
