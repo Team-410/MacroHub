@@ -41,10 +41,11 @@ const login = () => {
                 console.log("Kirjautuminen onnistui:", response);
                 alert("Kirjautuminen onnistui!");
 
-                // Tallenna JWT localStorageen
+                // Save to JWT localStorage
                 localStorage.setItem("authToken", response.data.token);
 
-                // vittu mikä purkkaratkaisu, pitää korjata
+                //Temporary sollution
+                // TODO fix this
                 setToken(response.data.token);
                 navigate('/');
                 window.location.reload();

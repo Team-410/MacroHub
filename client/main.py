@@ -12,12 +12,12 @@ from ttkthemes import ThemedTk
 CREDENTIALS_FILE = "credentials.json"
 
 def save_credentials(email, password):
-    """Tallentaa käyttäjätunnukset tiedostoon."""
+    """Saves credentials to a file"""
     with open(CREDENTIALS_FILE, "w") as file:
         json.dump({"email": email, "password": password}, file)
 
 def load_credentials():
-    """Lataa tallennetut käyttäjätunnukset, jos ne löytyvät."""
+    """Loads credentials if found"""
     if os.path.exists(CREDENTIALS_FILE):
         with open(CREDENTIALS_FILE, "r") as file:
             return json.load(file)

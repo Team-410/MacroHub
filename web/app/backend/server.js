@@ -49,8 +49,8 @@ connection.connect((err) => {
 });
 
 /*
-    Tästä alkaa apin reiti, näitä reittejä käytetään niin web sovelluksessa
-    kuin client scriptissä
+    Here begins API's route. 
+    These routes are used on the web app and on the python client
 */
 
 // votes

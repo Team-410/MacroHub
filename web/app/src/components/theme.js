@@ -24,7 +24,7 @@ const theme = createTheme({
         },
     },
 
-    // komponentit
+    // components
     components: {
         MuiLink: {
             styleOverrides: {

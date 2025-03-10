@@ -113,7 +113,7 @@ router.get('/macros/:id', async (req, res) => {
     const sql = 'SELECT * FROM macro WHERE macroid = ?';
 
     try {
-        // Käytetään promisified query-menetelmää
+        // Using promisified query method
         const [results] = await connection2.query(sql, [macroId]);
 
         if (results.length === 0) {

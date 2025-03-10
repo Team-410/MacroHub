@@ -82,7 +82,7 @@ router.get("/token/refresh", (req, res) => {
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({ error: "Token ei kelpaa" });
+            return res.status(403).json({ error: "Token invalid" });
         }
 
         console.log("User details from token:", user);
@@ -112,7 +112,7 @@ router.get("/token/userinfo", (req, res) => {
 
     jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if (err) {
-            return res.status(403).json({ error: "Token ei kelpaa" });
+            return res.status(403).json({ error: "Token invalid" });
         }
 
         console.log("User details from token:", user);
@@ -161,7 +161,7 @@ router.get("/token/userinfo", (req, res) => {
  */
 // POST-path to adding user (register)
 router.post('/adduser', async (req, res) => {
-    console.log('Pyyntö tullut adduser-reitille', req.body);
+    console.log('Request reached adduser path', req.body);
     const { email, password, fullname } = req.body;
 
     if (!email || !password) {
@@ -180,7 +180,7 @@ router.post('/adduser', async (req, res) => {
             return res.status(400).json({ error: 'This email is already used' });
         }
 
-        // Salasanan salaus odotetaan async/awaitilla
+        // Waiting for password hashing with async/await method
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const sql = 'INSERT INTO user (email, password, fullname) VALUES (?, ?, ?)';

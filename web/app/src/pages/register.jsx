@@ -37,7 +37,7 @@ const register = () => {
             });
 
             if (response.status === 200 || response.status === 201) {
-                alert("Käyttäjä rekisteröity onnistuneesti!");
+                alert("User registered succesfully");
                 navigate("/login");
             }
             else if (response.status === 400) {
