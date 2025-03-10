@@ -38,6 +38,9 @@ function Nav() {
                 <Button className='navlink' component={Link} to="/about" variant="text">
                     About
                 </Button>
+                <Button className='navlink' component={Link} to="/marketplace" variant="text">
+                    Marketplace
+                </Button>
                 {token && (
                     <>
                         <Button className='navlink' component={Link} to="personalList" variant="text">

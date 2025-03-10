@@ -8,10 +8,11 @@ const GlobalStyle = () => {
             {`
                 body {
                     background-color: ${theme.palette.background.default};
+                    /*background: linear-gradient(to bottom right, #181818, #2b2828);*/
                     color: ${theme.palette.text.primary};
                     display: flex;
                     justify-content: center;
-                    padding-bottom: 100px;
+                    padding-bottom: 50px;
                 }
 
                 ::-webkit-scrollbar {

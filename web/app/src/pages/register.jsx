@@ -14,6 +14,7 @@ import {
 
 const register = () => {
     const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
 
     const [formData, setFormData] = useState({
         email: "",
@@ -30,7 +31,7 @@ const register = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post("/api/adduser", formData, {
+            const response = await axios.post(`${API_URL}/api/adduser`, formData, {
                 headers: {
                     "Content-Type": "application/json",
                 },

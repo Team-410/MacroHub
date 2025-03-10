@@ -13,10 +13,12 @@ const Comments = () => {
     const [commentText, setCommentText] = useState('');
     const [animate, setAnimate] = useState(false);
 
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const response = await axios.get(`/api/macros/${id}/comments`);
+                const response = await axios.get(`${API_URL}/api/macros/${id}/comments`);
                 setComments(response.data.results);
             } catch (err) {
                 setError(err.response ? err.response.data.message : err.message);
@@ -38,7 +40,6 @@ const Comments = () => {
         }
     }, [showComments]);
 
-    // validating and sending comment to the backend
     const handleAddComment = async () => {
         if (!commentText.trim()) {
             return;
@@ -46,6 +47,7 @@ const Comments = () => {
     
         try {
             const token = localStorage.getItem('authToken');
+            const fullname = localStorage.getItem('fullname');
     
             if (!token) {
                 alert("No token found, please login.");
@@ -53,9 +55,9 @@ const Comments = () => {
             }
     
             const response = await axios.post(
-                `/api/macros/${id}/comments`,
+                `${API_URL}/api/macros/${id}/comments`,
                 {
-                    fullname: 'Your Name', // Replace this with the actual user's name (e.g., from state or user data)
+                    fullname: fullname,
                     comment: commentText
                 },
                 {
@@ -64,10 +66,8 @@ const Comments = () => {
                     },
                 }
             );
-    
-            console.log(response.data);
+            alert(response.data.message);
 
-            // Fetch the updated comments list
             const updatedComments = await axios.get(`/api/macros/${id}/comments`);
             setComments(updatedComments.data.results);
 
@@ -119,14 +119,21 @@ const Comments = () => {
                         key={comment.commentid}
                         sx={{
                             mb: 1,
-                            p: 1,
+                            p: 2,
                             transform: animate ? 'translateY(0)' : 'translateY(50px)',
                             opacity: animate ? 1 : 0,
                             transition: 'transform 0.8s ease, opacity 0.8s ease',
+                            backgroundColor: '#2b2828',
+                            borderRadius: 2,
                         }}
                     >
-                        <Typography color="text.secondary" sx={{ fontSize: 12, fontWeight: 600 }}>
-                            {comment.fullname}
+                        <Typography color="text.secondary">
+                            <span style={{ fontWeight: 'bold', fontSize: 14 }}>{comment.fullname}</span>{' '} 
+                            <span style={{ fontWeight: 300, fontSize: 12 }}>{new Date(comment.timestamp).toLocaleString('en-GB', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: '2-digit',
+                            })}</span>
                         </Typography>
                         <Typography variant="body1">{comment.comment}</Typography>
                     </Box>

@@ -3,8 +3,6 @@ dotenv.config();
 import express from 'express';
 
 import mysql from 'mysql2';
-
-import fs from 'fs';
 import cors from 'cors';
 
 import vote from './endpoints/vote.js';
@@ -12,6 +10,13 @@ import token from './endpoints/token.js';
 import macro from './endpoints/macro.js';
 import comment from './endpoints/comment.js';
 import swaggerSetup from './swagger.js';
+
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
@@ -25,8 +30,8 @@ const connection = mysql.createConnection({
     port: process.env.DB_PORT
 });
 
-
-const sqlScript = fs.readFileSync('createScript.sql', 'utf-8');
+// Lue SQL-tiedosto
+const sqlScript = fs.readFileSync(path.join(__dirname, 'createScript.sql'), 'utf-8');
 
 connection.connect((err) => {
     if (err) {
@@ -35,7 +40,6 @@ connection.connect((err) => {
     }
     console.log('DB connected');
 
-    // run sql create commands
     const sqlCommands = sqlScript.split(';').map(command => command.trim()).filter(command => command.length > 0);
 
     sqlCommands.forEach((command) => {
@@ -68,6 +72,6 @@ app.use('/api', comment);
 swaggerSetup(app);
 
 
-app.listen(5000, () => {
-    console.log('Server using port 5000');
+app.listen(process.env.SERVER_PORT, '0.0.0.0', () => {
+    console.log('Server using port ' + process.env.SERVER_PORT);
 });

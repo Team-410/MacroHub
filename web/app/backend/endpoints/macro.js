@@ -77,6 +77,39 @@ router.get('/macros', async (req, res) => {
     }
 });
 
+// GET-path for all macro apps (marketplace)
+router.get('/macros/apps', async (req, res) => {
+    try {
+        const [results] = await connection2.query('SELECT DISTINCT app FROM macro LIMIT 5');
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'apps not found' });
+        }
+
+        res.status(200).json({ apps: results });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error in retrieving apps' });
+    }
+});
+
+// GET-path for all macros in specific categorie (marketplace)
+router.get('/macros/app/:app', async (req, res) => {
+    const { app } = req.params;
+    try {
+        const [results] = await connection2.query('SELECT * FROM macro WHERE app = ? LIMIT 5', [app]);
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Categories not found' });
+        }
+
+        res.status(200).json({ macros: results });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error in retrieving categories' });
+    }
+});
+
 /**
  * @swagger
  * /macros/{id}:

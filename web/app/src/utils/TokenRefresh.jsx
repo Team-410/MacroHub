@@ -3,46 +3,49 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 const TokenRefresh = ({ children }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
+    const navigate = useNavigate();
+    const location = useLocation();
 
-  useEffect(() => {
-    const refreshAuthToken = async () => {
-      const oldToken = localStorage.getItem("authToken");
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
 
-      // Jos tokenia ei ole, ei tehdä mitään
-      if (!oldToken) return;
+    useEffect(() => {
+        const refreshAuthToken = async () => {
+            const oldToken = localStorage.getItem("authToken");
 
-      try {
-        const response = await axios.get("/api/token/refresh", {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${oldToken}`,
-          },
-        });
+            if (!oldToken) return;
 
-        if (response.status === 200) {
-          const newToken = response.data.token;
-          console.log("Uusi token vastaanotettu", newToken);
+            try {
+                const response = await axios.get(`${API_URL}/api/token/refresh`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${oldToken}`,
+                    },
+                });
 
-          // Tallennetaan uusi token localStorage:hen
-          localStorage.setItem("authToken", newToken);
-        } else {
-          console.log("Palautettiin muuta kuin 200 status:", response.status);
-          // Poistetaan authToken, jos vastaus ei ollut onnistunut
-          localStorage.removeItem("authToken");
-        }
-      } catch (error) {
-        console.error("Tokenin päivitys epäonnistui", error);
-        // Poistetaan authToken, jos virhe tapahtui
-        localStorage.removeItem("authToken");
-      }
-    };
+                if (response.status === 200) {
+                    const newToken = response.data.token;
+                    console.log("New token", newToken);
 
-    refreshAuthToken();
-  }, [location]);
+                    localStorage.setItem("authToken", newToken);
+                } else {
+                    console.log(
+                        "Error refreshing token, status code",
+                        response.status
+                    );
+                    localStorage.removeItem("authToken");
+                    localStorage.removeItem("fullname");
+                }
+            } catch (error) {
+                console.error("Token refresh failed", error);
+                localStorage.removeItem("authToken");
+                localStorage.removeItem("fullname");
+            }
+        };
 
-  return <>{children}</>;
+        refreshAuthToken();
+    }, [location]);
+
+    return <>{children}</>;
 };
 
 export default TokenRefresh;

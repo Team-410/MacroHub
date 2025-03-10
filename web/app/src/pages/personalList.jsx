@@ -8,6 +8,7 @@ function PersonalList() {
     const [list, setList] = useState([]);
     const [, setLoading] = useState(true);
     const [, setError] = useState(null);
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -19,7 +20,7 @@ function PersonalList() {
         }
 
         axios
-            .get("/api/personal_list", {
+            .get(`${API_URL}/api/personal_list`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

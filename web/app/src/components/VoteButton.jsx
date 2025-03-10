@@ -12,16 +12,17 @@ const VoteButton = ({ macroid }) => {
     const [existingVote, setExistingVote] = useState(null);
     const [voteAnimation, setVoteAnimation] = useState(false);
 
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+
     useEffect(() => {
 
         setTimeout(() => {
             setVoteAnimation(true);
         }, 300)
 
-        axios.get(`http://localhost:5000/api/macro/${macroid}/votes`)
+        axios.get(`${API_URL}/api/macro/${macroid}/votes`)
             .then(response => {
 
-                // timeout for total votes animation
                 setTimeout(() => {
                     setVotes(response.data.total);
                 }, 300)
@@ -31,7 +32,7 @@ const VoteButton = ({ macroid }) => {
         const token = localStorage.getItem('authToken');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
     
-        axios.get(`http://localhost:5000/api/macro/${macroid}/uservote`, { headers })
+        axios.get(`${API_URL}/api/macro/${macroid}/uservote`, { headers })
             .then(response => {
                 setExistingVote(response.data.userVote)
             })
@@ -56,7 +57,7 @@ const VoteButton = ({ macroid }) => {
         }
     
         axios.post(
-            `http://localhost:5000/api/macro/${macroid}/vote`,
+            `${API_URL}/api/macro/${macroid}/vote`,
             { voteType: type },
             {
                 headers: {
@@ -83,7 +84,7 @@ const VoteButton = ({ macroid }) => {
         }
 
         axios.delete(
-            `http://localhost:5000/api/macro/${macroid}/uservote/remove`,
+            `${API_URL}/api/macro/${macroid}/uservote/remove`,
             {
                 headers: {Authorization: `Bearer ${token}`}
             }
