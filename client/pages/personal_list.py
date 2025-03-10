@@ -74,7 +74,7 @@ def show_personal_macros(parent_window):
         parent_window()  # Reopen the parent window
 
     def run_macrohub():
-        """Suorittaa macrohub.py-tiedoston oikeassa ympäristössä"""
+        """Executes macrohub.py in the right environment"""
         script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "macrohub.py"))
         subprocess.run([sys.executable, script_path], cwd=os.path.dirname(script_path))
 
