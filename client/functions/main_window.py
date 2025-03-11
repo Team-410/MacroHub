@@ -56,7 +56,7 @@ class MainWindow:
         self.record_button = ttk.Button(self.middle_frame, text="Start Recording", command=self.toggle_recording)
         self.record_button.grid(row=3, column=0, pady=5)
 
-        # Luo olio
+        # Create object
         macro = MacroRunner(self.macro_steps, self.persistent_keys, self.stop_event)
         self.save_button = ttk.Button(
             self.middle_frame,
