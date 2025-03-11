@@ -44,10 +44,10 @@ class TableManager:
         self.hold_time_entry.grid(row=1, column=1, padx=5, pady=5)
 
         self.add_button = ttk.Button(self.input_frame, text="Add Step", command=self.add_step)
-        self.add_button.grid(row=2, column=0, columnspan=2, pady=5)
+        self.add_button.grid(row=2, column=1, columnspan=2, pady=5)
 
         self.delete_button = ttk.Button(self.input_frame, text="Delete Step", command=self.delete_step)
-        self.delete_button.grid(row=3, column=0, columnspan=2, pady=5)
+        self.delete_button.grid(row=3, column=1, columnspan=2, pady=5)
 
     def add_step(self):
         keys = self.key_entry.get()

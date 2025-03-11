@@ -54,17 +54,17 @@ class MainWindow:
         self.table_manager = TableManager(self.middle_frame, self.macro_steps)
     
         self.record_button = ttk.Button(self.middle_frame, text="Start Recording", command=self.toggle_recording)
-        self.record_button.grid(row=2, column=0, pady=10)
+        self.record_button.grid(row=3, column=0, pady=5)
 
         # Luo olio
         macro = MacroRunner(self.macro_steps, self.persistent_keys, self.stop_event)
         self.save_button = ttk.Button(
-            self.left_frame, 
-            text="Save", 
+            self.middle_frame,
+            text="Save Macro", 
             command=lambda: save_macro(macro)
         )
 
-        self.save_button.grid(row=2, column=0, pady=10)
+        self.save_button.grid(row=5, column=0, pady=10)
 
 
         # Manual step addition below the recording button
