@@ -17,15 +17,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd web/app
           npm ci
 
       - name: Lint
         run: |
-          cd frontend
+          cd web/app
           npm run lint
 
       - name: Build
         run: |
-          cd frontend
+          cd web/app
           npm run build
