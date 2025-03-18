@@ -7,10 +7,6 @@ from functions.main_window import MainWindow
 
 import tkinter as tk
 
-## testing macrohub.py
-import os
-import sys
-
 def show_personal_macros(parent_window):
     """Display the user's personal macro list in a new window."""
 

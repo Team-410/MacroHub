@@ -306,12 +306,7 @@ router.post('/personal_list', async (req, res) => {
 
 // POST-path to add macro (python client)
 router.post('/save_macro', async (req, res) => {
-    const macro_object  = req.body;
-
-    console.log(macro_object, "from python client");
-    const macroString = JSON.stringify(macro_object.macro.macro_steps)
-    const persistentKeyString = JSON.stringify(macro_object.macro.persistent_keys)
-    console.log(macroString + " " + persistentKeyString);
+    const macro_object = req.body;
 
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -336,6 +331,7 @@ router.post('/save_macro', async (req, res) => {
     `INSERT INTO macro (macroname, macrodescription, app, category, macrotype, macro) 
         VALUES (?, ?, ?, ?, ?, ?)`;
 
+    let macroId;
     try {
         const [results] = await connection2.query(addMacro, [
             macro_object.macroname,
@@ -345,13 +341,23 @@ router.post('/save_macro', async (req, res) => {
             macro_object.macrotype,
             JSON.stringify(macro_object.macro)
         ]);
-
-        res.status(201).json({ message: 'Macro added', macroid: results.insertId });
+        macroId = results.insertId;
     } catch (err) {
         console.error("Database error:", err);
         return res.status(500).json({ message: 'Error in adding macro', error: err.message });
     }
+
+    const addMacroToPersonalList = "INSERT INTO personal_list (userid, macroid) VALUES (?, ?)";
+    try {
+        await connection2.query(addMacroToPersonalList, [userid, macroId]);
+
+        return res.status(201).json({ message: 'Macro added successfully', macroid: macroId });
+    } catch (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: 'Error in adding macro to personal list', error: err.message });
+    }
 });
+
 
 
 export default router;

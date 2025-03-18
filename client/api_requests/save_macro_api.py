@@ -37,9 +37,9 @@ def save_macro(macro: MacroRunner):
                 'error': 'Token expired or invalid. Please log in again.'
             }
 
-        response.raise_for_status()  # Heittää virheen, jos statuskoodi on 4xx tai 5xx
+        response.raise_for_status()
 
-        data = response.json()  # Muutetaan vastaus JSON-muotoon
+        data = response.json()
         return {
             'success': True,
             'macroid': data.get("macroid")

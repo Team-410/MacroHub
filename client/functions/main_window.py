@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from ttkthemes import ThemedTk
 import threading
 from .table_manager import TableManager
 from .persistent_keys_manager import PersistentKeysManager
@@ -13,7 +14,8 @@ from api_requests.save_macro_api import save_macro
 
 class MainWindow:
     def __init__(self, macro_steps=None, persistent_keys=None):
-        self.root = tk.Tk()
+        self.root = ThemedTk(theme="arc")
+        self.root.configure(background='black')
         self.root.title("MacroHub")
         self.root.resizable(False, False)
         self.macro_running = False
@@ -38,7 +40,7 @@ class MainWindow:
 
     def setup_ui(self):
         # Main title at the top middle
-        ttk.Label(self.root, text="MacroHub", font=("Helvetica", 16, "bold")).pack(pady=10)
+        ttk.Label(self.root, text="MacroHub", background="black", foreground="white", font=("Helvetica", 16, "bold")).pack(pady=10)
 
         # Main frame for the content
         self.main_frame = ttk.Frame(self.root)
@@ -66,11 +68,11 @@ class MainWindow:
         self.advanced_button = ttk.Button(self.middle_frame, text="Advanced Settings", command=self.open_advanced_settings)
         self.advanced_button.grid(row=6, column=0, pady=5)
 
-        self.hotkey_label = ttk.Label(self.root, text=f"Current Hotkey: {self.current_hotkey}")
+        self.hotkey_label = ttk.Label(self.root, text=f"Current Hotkey: {self.current_hotkey}", background="black", foreground="white")
         self.hotkey_label.pack(side="bottom", pady=5)
 
         # Display Persistent Keys in the main window
-        self.persistent_keys_label = ttk.Label(self.root, text=f"Persistent Keys: {', '.join(self.persistent_keys) if self.persistent_keys else 'None'}")
+        self.persistent_keys_label = ttk.Label(self.root, text=f"Persistent Keys: {', '.join(self.persistent_keys) if self.persistent_keys else 'None'}", background="black", foreground="white")
         self.persistent_keys_label.pack(side="bottom", pady=5)
 
         # Manual step addition below the recording button
@@ -78,7 +80,7 @@ class MainWindow:
         self.manual_frame.grid(row=3, column=0, pady=10)
 
         # Status section at the bottom middle
-        self.status_label = ttk.Label(self.root, text="Status: Stopped", foreground="red")
+        self.status_label = ttk.Label(self.root, text="Status: Stopped", background="black", foreground="red")
         self.status_label.pack(side="bottom", pady=10)
 
     def toggle_macro(self):

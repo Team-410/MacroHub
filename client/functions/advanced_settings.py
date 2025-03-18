@@ -1,11 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+from ttkthemes import ThemedTk
 
 class AdvancedSettings:
     def __init__(self, parent, loop_var, humanization_var, persistent_keys, current_hotkey, update_hotkey_callback, update_persistent_keys):
         self.window = tk.Toplevel(parent)
+        self.window.configure(bg='black')
         self.window.title("Advanced Settings")
-        self.window.geometry("300x300")
+        self.window.geometry("300x350")
         self.window.resizable(False, False)
 
         self.loop_var = loop_var
@@ -16,15 +18,15 @@ class AdvancedSettings:
         self.update_persistent_keys_callback = update_persistent_keys  # Store the callback
 
         # Loop Macro checkbox
-        self.loop_checkbox = ttk.Checkbutton(self.window, text="Loop Macro", variable=self.loop_var)
+        self.loop_checkbox = tk.Checkbutton(self.window, text="Loop Macro", fg="white", bg="black", variable=self.loop_var)
         self.loop_checkbox.pack(pady=5)
 
         # Humanization checkbox
-        self.humanization_checkbox = ttk.Checkbutton(self.window, text="Humanization (Random Delay)", variable=self.humanization_var)
+        self.humanization_checkbox = tk.Checkbutton(self.window, text="Humanization (Random Delay)", fg="white", bg="black", variable=self.humanization_var)
         self.humanization_checkbox.pack(pady=5)
 
         # Persistent Keys section
-        ttk.Label(self.window, text="Persistent Keys:").pack(pady=5)
+        tk.Label(self.window, text="Persistent Keys:", fg="white", bg="black").pack(pady=5)
         self.persistent_keys_entry = ttk.Entry(self.window, width=30)
         self.persistent_keys_entry.pack(pady=5)
         self.persistent_keys_entry.insert(0, ", ".join(self.persistent_keys))
@@ -33,7 +35,7 @@ class AdvancedSettings:
         self.update_persistent_keys_button.pack(pady=5)
 
         # Hotkey selection
-        ttk.Label(self.window, text="Hotkey:").pack(pady=5)
+        tk.Label(self.window, text="Hotkey:", fg="white", bg="black").pack(pady=5)
         self.hotkey_entry = ttk.Entry(self.window, width=10)
         self.hotkey_entry.pack(pady=5)
         self.hotkey_entry.insert(0, self.current_hotkey)
