@@ -11,31 +11,20 @@
 
 ## 📋 Usage Guide
 
-### 💻 DEMO CLIENT
-```bash
-# Step 0: Navigate to the client directory
-cd Path/to/client
-
-# Step 1: Activate the virtual environment
-./venv/Scripts/activate
-
-# Step 2: Install required dependencies
-pip install -r requirements.txt
-
-# Step 3: Run the demo client
-python macroHub.py
-```
-
 ### 🐍 PYTHON CLIENT
 ```bash
 # Step 0: Navigate to the client directory
 cd ./client/
 
-# Step 1: Install required dependencies
+# Step 1: Activate Virtual Env
+venv/scripts/activate
+
+# Step 2: Install required dependencies
 python -m pip install -r requirements.txt
 
-# Step 2: Run the Python client
+# Step 3: Run the Python client
 python .\main.py
+OPTIONAL(no login): python .\create_macro.py 
 ```
 
 ### ⚙️ BACKEND
@@ -47,6 +36,16 @@ cd ./web/app/backend/
 # Step 2: Start the backend server
 node server.js
 ```
+
+### 🌐 FRONTEND
+```bash
+# Step 0: Navigate to the frontend directory
+cd ./web/app/
+
+# Step 1: Run the development server
+npm run dev
+```
+
 ### DATABASE
 ```mermaid
 erDiagram
@@ -130,16 +129,6 @@ sequenceDiagram
     LocalClient->>API: Update personal macros
     API-->>LocalClient: Confirm changes
 
-```
-
-
-### 🌐 FRONTEND
-```bash
-# Step 0: Navigate to the frontend directory
-cd ./web/app/
-
-# Step 1: Run the development server
-npm run dev
 ```
 
 ### SWAGGER
