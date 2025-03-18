@@ -12,18 +12,21 @@ from .advanced_settings import AdvancedSettings
 from api_requests.save_macro_api import save_macro
 
 class MainWindow:
-    def __init__(self):
+    def __init__(self, macro_steps=None, persistent_keys=None):
         self.root = tk.Tk()
         self.root.title("MacroHub")
         self.root.resizable(False, False)
-        self.macro_steps = []
-        self.persistent_keys = []  # Initialize with empty list
         self.macro_running = False
         self.stop_event = threading.Event()
         self.macro_thread = None
         self.current_hotkey = "F3"
         self.recording = False
         self.macro_recorder = MacroRecorder(self.add_recorded_step)
+
+        self.macro_steps = macro_steps if macro_steps is not None else []
+        self.persistent_keys = persistent_keys if persistent_keys is not None else []
+
+        print(self.macro_steps)
         
         # Add loop and humanization variables
         self.loop_var = tk.BooleanVar()

@@ -3,8 +3,11 @@ from .macro_utils import map_key_for_display
 
 class TableManager:
     def __init__(self, parent, macro_steps):
+        print(macro_steps)
         self.macro_steps = macro_steps
         self.setup_ui(parent)
+        self.setup_table(parent)
+
 
     def setup_ui(self, parent):
         """Sets up the entire macro steps section, including title, table, and inputs."""
@@ -29,6 +32,8 @@ class TableManager:
         self.scrollbar = ttk.Scrollbar(self.table_frame, orient="vertical", command=self.table.yview)
         self.scrollbar.pack(side="right", fill="y")
         self.table.configure(yscrollcommand=self.scrollbar.set)
+
+        self.update_table()
 
     def setup_inputs(self, parent):
         self.input_frame = ttk.Frame(parent)

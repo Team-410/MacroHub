@@ -11,14 +11,23 @@ def save_macro(macro: MacroRunner):
     """
     Save a new macro to the backend.
     """
-    macro_dict = macro.to_dict()
-    print(macro_dict)
+
+    macro_object = {
+        "macroname": "test",
+        "macrodescription": "test macro",
+        "app": "test app",
+        "category": "test category",
+        "macrotype": "test type",
+        "macro": macro.to_dict()
+    }
+    print("Sending macro:", macro_object)
 
     try:
         response = requests.post(
             f"{API_BASE_URL}/api/save_macro",
-            headers={"Authorization": f"Bearer {get_token()}"},
-            json=macro_dict,
+            headers={"Authorization": f"Bearer {get_token()}",
+                     "Content-Type": "application/json"},
+            json=macro_object,  
             timeout=10
         )
         
@@ -27,10 +36,10 @@ def save_macro(macro: MacroRunner):
                 'success': False,
                 'error': 'Token expired or invalid. Please log in again.'
             }
-        
-        response.raise_for_status()
-        
-        data = response.json()
+
+        response.raise_for_status()  # Heittää virheen, jos statuskoodi on 4xx tai 5xx
+
+        data = response.json()  # Muutetaan vastaus JSON-muotoon
         return {
             'success': True,
             'macroid': data.get("macroid")

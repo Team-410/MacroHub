@@ -3,11 +3,11 @@ from ttkthemes import ThemedTk
 from api_requests.macros import fetch_personal_macros
 from api_requests.user import get_user_info
 from pages.macropage import show_macro_details
+from functions.main_window import MainWindow
 
 import tkinter as tk
 
 ## testing macrohub.py
-import subprocess
 import os
 import sys
 
@@ -74,9 +74,9 @@ def show_personal_macros(parent_window):
         parent_window()  # Reopen the parent window
 
     def run_macrohub():
-        """Executes macrohub.py in the right environment"""
-        script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "macrohub.py"))
-        subprocess.run([sys.executable, script_path], cwd=os.path.dirname(script_path))
+        print("run macrohub")
+        app = MainWindow()
+        app.run()
 
     # Buttons
 
