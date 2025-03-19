@@ -1,12 +1,10 @@
 import requests
-import os
 from api_requests.token import get_token
-from dotenv import load_dotenv
+from functions.load_config import load_config
 
-load_dotenv()
+config = load_config()
 
-# Hae muuttujat
-API_BASE_URL = os.getenv("API_BASE_URL")
+API_BASE_URL = config.get("API_BASE_URL", "http://localhost:5000")
 
 def fetch_personal_macros():
     """
@@ -23,7 +21,7 @@ def fetch_personal_macros():
     """
     try:
         response = requests.get(
-            f"{os.getenv('API_BASE_URL')}/api/personal_list",
+            f"{API_BASE_URL}/api/personal_list",
             headers={"Authorization": f"Bearer {get_token()}"},
             timeout=10  # Add timeout for safety
         )

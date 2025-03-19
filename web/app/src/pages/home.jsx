@@ -92,13 +92,14 @@ function HomePage() {
                     variant="contained"
                     sx={{
                         opacity: showText ? 1 : 0,
-                        transform: showText
-                            ? "translateX(0)"
-                            : "translateX(-150px)",
+                        transform: showText ? "translateX(0)" : "translateX(-150px)",
                         transition: "all 0.8s cubic-bezier(0.25, 1.5, 0.5, 1)",
                         mt: "30px",
                         padding: "15px 30px",
                     }}
+                    component="a"
+                    href="/main.exe"
+                    download="main.exe"
                 >
                     Download
                 </Button>
