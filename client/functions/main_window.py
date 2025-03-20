@@ -54,19 +54,17 @@ class MainWindow:
         self.table_manager = TableManager(self.middle_frame, self.macro_steps)
     
         self.record_button = ttk.Button(self.middle_frame, text="Start Recording", command=self.toggle_recording)
-        self.record_button.grid(row=3, column=0, pady=0)
+        self.record_button.grid(row=3, column=0, padx=10, pady=5, sticky="ew")
 
-        # Create object
         macro = MacroRunner(self.macro_steps, self.persistent_keys, self.stop_event)
-        self.save_button = ttk.Button(
-            self.middle_frame,
-            text="Save Macro", 
-            command=lambda: save_macro(macro)
-        )
-        self.save_button.grid(row=5, column=0, pady=5)
+
+        self.save_button = ttk.Button(self.middle_frame, text="Save Macro", command=lambda: save_macro(macro))
+        self.save_button.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
 
         self.advanced_button = ttk.Button(self.middle_frame, text="Advanced Settings", command=self.open_advanced_settings)
-        self.advanced_button.grid(row=6, column=0, pady=5)
+        self.advanced_button.grid(row=5, column=0, padx=10, pady=5, sticky="ew")
+
+        self.middle_frame.columnconfigure(0, weight=1)
 
         self.hotkey_label = ttk.Label(self.root, text=f"Current Hotkey: {self.current_hotkey}", background="black", foreground="white")
         self.hotkey_label.pack(side="bottom", pady=5)

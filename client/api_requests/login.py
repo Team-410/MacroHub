@@ -1,9 +1,13 @@
 import requests
-import os
+from functions.load_config import load_config
+
+config = load_config()
+
+API_BASE_URL = config.get("API_BASE_URL", "http://localhost:5000")
 
 def login(email, password):
     # API-osoite
-    url = 'http://localhost:5000/api/login'
+    url = f"{API_BASE_URL}/api/login"
 
     payload = {
         "email": email,

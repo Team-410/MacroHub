@@ -47,10 +47,19 @@ def fetch_personal_macros():
         }
         
     except requests.exceptions.RequestException as e:
-        return {
-            'success': False,
-            'error': f"Network error: {str(e)}"
-        }
+        if isinstance(e, requests.exceptions.HTTPError) and e.response is not None and e.response.status_code == 404:
+            return {
+                'success': False,
+                'macros': [],
+                'error': "You don't have macros added to your personal list. Go to web client to add them."
+            }
+        else:
+            return {
+                'success': False,
+                'macros': [],
+                'error': f"Network error: {e}"
+            }
+
     except ValueError:  # JSON decode error
         return {
             'success': False,

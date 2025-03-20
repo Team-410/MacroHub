@@ -1,11 +1,12 @@
 import requests
 import os
 from api_requests.token import get_token
-from dotenv import load_dotenv
 from functions.macro_runner import MacroRunner
+from functions.load_config import load_config
 
-load_dotenv()
-API_BASE_URL = os.getenv("API_BASE_URL")
+config = load_config()
+
+API_BASE_URL = config.get("API_BASE_URL", "http://localhost:5000")
 
 def save_macro(macro: MacroRunner):
     """
