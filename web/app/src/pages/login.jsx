@@ -17,6 +17,8 @@ const login = () => {
     const navigate = useNavigate();
     const [token, setToken] = useState(localStorage.getItem('authToken'));
 
+    const API_URL = import.meta.env.VITE_BASE_API_URL;
+
     const [formData, setFormData] = useState({
         email: "",
         password: "",
@@ -31,7 +33,7 @@ const login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post("/api/login", formData, {
+            const response = await axios.post(`${API_URL}/api/login`, formData, {
                 headers: {
                     "Content-Type": "application/json",
                 },

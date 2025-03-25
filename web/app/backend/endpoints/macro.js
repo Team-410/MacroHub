@@ -306,9 +306,7 @@ router.post('/personal_list', async (req, res) => {
 
 // POST-path to add macro (python client)
 router.post('/save_macro', async (req, res) => {
-    const { macro } = req.body;
-
-    console.log(macro, "from python client");
+    const macro_object = req.body;
 
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -329,16 +327,37 @@ router.post('/save_macro', async (req, res) => {
         return res.status(400).json({ message: 'Invalid userid' });
     }
 
-    const addMacro = 'INSERT INTO FROM macro macroname, macrodescription, app, category, macrotype, macro VALUES (?, ?, ?, ?, ?, ?)';
+    const addMacro = 
+    `INSERT INTO macro (macroname, macrodescription, app, category, macrotype, macro) 
+        VALUES (?, ?, ?, ?, ?, ?)`;
 
+    let macroId;
     try {
-        const [results] = await connection2.query(addMacro, [macro.macroname, macro.macrodescription, macro.app, macro.category, macro.macrotype, macro.macro]);
-        res.status(201).json({ message: 'Macro added', listId: results.insertId });
+        const [results] = await connection2.query(addMacro, [
+            macro_object.macroname,
+            macro_object.macrodescription,
+            macro_object.app,
+            macro_object.category,
+            macro_object.macrotype,
+            JSON.stringify(macro_object.macro)
+        ]);
+        macroId = results.insertId;
     } catch (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Error in  adding macro' });
+        console.error("Database error:", err);
+        return res.status(500).json({ message: 'Error in adding macro', error: err.message });
+    }
+
+    const addMacroToPersonalList = "INSERT INTO personal_list (userid, macroid) VALUES (?, ?)";
+    try {
+        await connection2.query(addMacroToPersonalList, [userid, macroId]);
+
+        return res.status(201).json({ message: 'Macro added successfully', macroid: macroId });
+    } catch (err) {
+        console.error("Database error:", err);
+        return res.status(500).json({ message: 'Error in adding macro to personal list', error: err.message });
     }
 });
+
 
 
 export default router;
