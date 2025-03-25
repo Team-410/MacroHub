@@ -80,7 +80,7 @@ router.get('/macros', async (req, res) => {
 // GET-path for all macro apps (marketplace)
 router.get('/macros/apps', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT DISTINCT app FROM macro LIMIT 5');
+        const [results] = await connection2.query('SELECT DISTINCT app FROM macro LIMIT 10');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'apps not found' });

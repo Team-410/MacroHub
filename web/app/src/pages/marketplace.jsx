@@ -30,6 +30,7 @@ export default function Marketplace() {
         axios
             .get(`${API_URL}/api/macros/apps`)
             .then((response) => {
+                console.log(response);
                 setApps(response.data.apps);
             })
             .catch((error) => {
