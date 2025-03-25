@@ -16,10 +16,10 @@ const options = {
                 url: 'http://localhost:5000/api',
                 description: 'Local server',
             },
-            { 
-                url: 'https://macrohub-backend-6-3-25-macrohub.2.rahtiapp.fi',
-                description: 'Deployded server on Rahti'
+            {
+                url: 'macrohub-backend-6-3-25-macrohub.2.rahtiapp.fi/api'
             }
+
         ],
     },
     apis: ['./endpoints/*.js'], 
