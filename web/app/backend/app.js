@@ -8,6 +8,7 @@ import vote from './endpoints/vote.js';
 import token from './endpoints/token.js';
 import macro from './endpoints/macro.js';
 import comment from './endpoints/comment.js';
+import blink from './endpoints/blink.js';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -35,5 +36,8 @@ app.use('/api', macro);
 
 // comments
 app.use('/api', comment);
+
+// blink
+app.use('/api', blink);
 
 export default app;
