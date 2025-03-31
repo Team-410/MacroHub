@@ -304,6 +304,71 @@ router.post('/personal_list', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * /personal_list:
+ *   delete:
+ *     summary: Remove a macro from personal list
+ *     tags: [PersonalList]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               macroid:
+ *                 type: integer
+ *                 description: The ID of the macro to remove
+ *     responses:
+ *       200:
+ *         description: Macro removed from personal list
+ *       400:
+ *         description: Token missing or malformed / Invalid macro ID
+ *       404:
+ *         description: Macro not found in personal list
+ *       500:
+ *         description: Error in removing macro
+ */
+// DELETE-path to remove macro from personal list (web client)
+router.delete('/personal_list', async (req, res) => {
+    const { macroid } = req.body;
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return res.status(400).json({ message: 'Token missing or malformed' });
+    }
+
+    let decoded;
+    try {
+        decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    const userid = decoded.userId;
+
+    if (!macroid || isNaN(macroid)) {
+        return res.status(400).json({ message: 'Invalid macro ID' });
+    }
+
+    const deleteSql = 'DELETE FROM personal_list WHERE userid = ? AND macroid = ?';
+
+    try {
+        const [results] = await connection2.query(deleteSql, [userid, macroid]);
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ message: 'Macro not found in personal list' });
+        }
+        res.status(200).json({ message: 'Macro removed from personal list' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error in removing macro from personal list' });
+    }
+});
+
+
 // POST-path to add macro (python client)
 router.post('/save_macro', async (req, res) => {
     const macro_object = req.body;
