@@ -17,7 +17,8 @@ const options = {
                 description: 'Local server',
             },
             {
-                url: 'macrohub-backend-6-3-25-macrohub.2.rahtiapp.fi/api'
+                url: 'macrohub-backend-6-3-25-macrohub.2.rahtiapp.fi/api',
+                description: 'Official MacroHub servers'
             }
 
         ],
