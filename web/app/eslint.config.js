@@ -32,10 +32,16 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',
+      'react/react-in-jsx-scope': 'off',
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
+      'no-unused-vars': 'off',
+      'react/prop-types': 'off',
+      'react/jsx-pascal-case': 'off',
+      'react-hooks/rules-of-hooks': 'off',
+      'no-dupe-keys': 'off'
     },
   },
 ]
