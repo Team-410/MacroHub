@@ -132,6 +132,7 @@ sequenceDiagram
 ```
 
 ### SWAGGER
+Swagger documentation is avaible [here](https://macrohub-backend-6-3-25-macrohub.2.rahtiapp.fi/swagger/)
 
 If backend is run locally, by default Swagger documentation is available at:
 [http://localhost:5000/swagger](http://localhost:5000/swagger)
