@@ -29,3 +29,24 @@ jobs:
         run: |
           cd web/app
           npm run build
+  backend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        run: |
+          cd web/app/backend
+          npm ci
+
+      - name: Lint backend
+        run: |
+          cd web/app/backend
+          npm run lint
