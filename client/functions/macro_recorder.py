@@ -32,6 +32,21 @@ class MacroRecorder:
         try:
             key_char = key.char
         except AttributeError:
-            key_char = str(key)
+            special_keys = {
+                keyboard.Key.space: "Spacebar",
+                keyboard.Key.enter: "Enter",
+                keyboard.Key.tab: "Tab",
+                keyboard.Key.esc: "Escape",
+                keyboard.Key.shift: "Shift",
+                keyboard.Key.ctrl: "Ctrl",
+                keyboard.Key.alt: "Alt",
+                keyboard.Key.backspace: "Backspace",
+            }
+            key_char = special_keys.get(key, str(key)) 
 
+            # FIXME: Stop recording when space is pressed
+            if key_char == "Key.space":
+                self.recording = True
+
+        print(f"Tallennettu näppäin: {key_char}")
         self.add_step_callback(key_char, delay)

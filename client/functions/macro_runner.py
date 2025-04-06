@@ -40,17 +40,17 @@ class MacroRunner:
                             self.keyboard_controller.press(char)
                             time.sleep(hold_time)
                             self.keyboard_controller.release(char)
-
-                    elif keys == Key.enter:
-                        self.keyboard_controller.press(Key.enter)
+                    else:
+                        self.keyboard_controller.press(keys)
                         time.sleep(hold_time)
-                        self.keyboard_controller.release(Key.enter)
+                        self.keyboard_controller.release(keys)
 
                     if humanization:
-                        random_delay = random.uniform(0, 0.5)  # Random delay between 0-500ms
+                        random_delay = random.uniform(0, 0.5) 
                         time.sleep(random_delay)
 
-                    time.sleep(0.2)  # Small delay between steps
+                    time.sleep(0.2)  # Pieni viive askelten välillä
+
 
                 if not loop:
                     break
@@ -59,7 +59,7 @@ class MacroRunner:
         finally:
             for key in persistent_keys_pressed:
                 self.keyboard_controller.release(key)
-
+    
     def map_display_to_key(self, display_name):
         reverse_special_keys = {
             "Spacebar": " ",

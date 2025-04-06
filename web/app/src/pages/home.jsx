@@ -98,8 +98,8 @@ function HomePage() {
                         padding: "15px 30px",
                     }}
                     component="a"
-                    href="/main.exe"
-                    download="main.exe"
+                    href="/macrohub.exe"
+                    download="macrohub.exe"
                 >
                     Download
                 </Button>

@@ -269,7 +269,7 @@ macro_steps = []
 macro_running = False
 stop_event = threading.Event()
 macro_thread = None
-current_hotkey = "F3"  # Default hotkey
+current_hotkey = "F10"  # Default hotkey
 persistent_keys = []  # List of persistent keys
 
 # Main frame
