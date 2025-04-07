@@ -8,20 +8,12 @@ config = load_config()
 
 API_BASE_URL = config.get("API_BASE_URL", "http://localhost:5000")
 
-def save_macro(macro: MacroRunner):
+def save_macro(macro_object):
     """
     Save a new macro to the backend.
     """
 
-    macro_object = {
-        "macroname": "test",
-        "macrodescription": "test macro",
-        "app": "test app",
-        "category": "test category",
-        "macrotype": "test type",
-        "macro": macro.to_dict()
-    }
-    print("Sending macro:", macro_object)
+    print(macro_object)
 
     try:
         response = requests.post(

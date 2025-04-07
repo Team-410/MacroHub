@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-from ttkthemes import ThemedTk
+from tkinter import ttk
+import customtkinter as ctk
 import threading
 from .table_manager import TableManager
 from .persistent_keys_manager import PersistentKeysManager
@@ -10,12 +10,15 @@ from .macro_runner import MacroRunner
 from .macro_recorder import MacroRecorder
 from .advanced_settings import AdvancedSettings
 
-from api_requests.save_macro_api import save_macro
+from pages.macro_details import add_details
 
 class MainWindow:
     def __init__(self, macro_steps=None, persistent_keys=None):
-        self.root = ThemedTk(theme="arc")
-        self.root.configure(background='black')
+
+        ctk.set_appearance_mode("dark") 
+        ctk.set_default_color_theme("green")
+
+        self.root = ctk.CTk()
         self.root.title("MacroHub")
         self.root.resizable(False, False)
         self.macro_running = False
@@ -27,10 +30,7 @@ class MainWindow:
 
         self.macro_steps = macro_steps if macro_steps is not None else []
         self.persistent_keys = persistent_keys if persistent_keys is not None else []
-
-        print(self.macro_steps)
         
-        # Add loop and humanization variables
         self.loop_var = tk.BooleanVar()
         self.humanization_var = tk.BooleanVar()
 
@@ -39,59 +39,48 @@ class MainWindow:
         self.keyboard_listener.start()
 
     def setup_ui(self):
-        # Main title at the top middle
-        ttk.Label(self.root, text="MacroHub", background="black", foreground="white", font=("Helvetica", 16, "bold")).pack(pady=10)
+        self.middle_frame = ctk.CTkFrame(self.root)
+        self.middle_frame.pack(pady=20, padx=20,  fill="both", expand=True)
 
-        # Main frame for the content
-        self.main_frame = ttk.Frame(self.root)
-        self.main_frame.pack(padx=20, pady=10)
-
-        # Middle frame for Keystrokes and Steps
-        self.middle_frame = ttk.Frame(self.main_frame)
-        self.middle_frame.pack(pady=10)
-
-        # Table for macro steps
         self.table_manager = TableManager(self.middle_frame, self.macro_steps)
-    
-        self.record_button = ttk.Button(self.middle_frame, text="Start Recording", command=self.toggle_recording)
-        self.record_button.grid(row=3, column=0, padx=10, pady=5, sticky="ew")
+
+        self.buttons_frame = ctk.CTkFrame(self.middle_frame)
+        self.buttons_frame.grid(row=3, column=0, padx=20, pady=20, sticky="ew")
+
+        self.record_button = ctk.CTkButton(self.buttons_frame, text="Start Recording", command=self.toggle_recording)
+        self.record_button.grid(row=0, column=0, padx=10, pady=20, sticky="ew")
+
+        self.save_button = ctk.CTkButton(self.buttons_frame, text="Save Macro", command=lambda: add_details(macro))
+        self.save_button.grid(row=0, column=1, padx=10, pady=20, sticky="ew")
+
+        self.advanced_button = ctk.CTkButton(self.buttons_frame, text="Advanced Settings", command=self.open_advanced_settings)
+        self.advanced_button.grid(row=0, column=2, padx=10, pady=20, sticky="ew")
 
         macro = MacroRunner(self.macro_steps, self.persistent_keys, self.stop_event)
 
-        self.save_button = ttk.Button(self.middle_frame, text="Save Macro", command=lambda: save_macro(macro))
-        self.save_button.grid(row=4, column=0, padx=10, pady=5, sticky="ew")
-
-        self.advanced_button = ttk.Button(self.middle_frame, text="Advanced Settings", command=self.open_advanced_settings)
-        self.advanced_button.grid(row=5, column=0, padx=10, pady=5, sticky="ew")
-
-        self.middle_frame.columnconfigure(0, weight=1)
-
-        self.hotkey_label = ttk.Label(self.root, text=f"Current Hotkey: {self.current_hotkey}", background="black", foreground="white")
+        self.hotkey_label = ctk.CTkLabel(self.root, text=f"Current Hotkey: {self.current_hotkey}")
         self.hotkey_label.pack(side="bottom", pady=5)
 
-        # Display Persistent Keys in the main window
-        self.persistent_keys_label = ttk.Label(self.root, text=f"Persistent Keys: {', '.join(self.persistent_keys) if self.persistent_keys else 'None'}", background="black", foreground="white")
+        self.persistent_keys_label = ctk.CTkLabel(self.root, text=f"Persistent Keys: {', '.join(self.persistent_keys) if self.persistent_keys else 'None'}")
         self.persistent_keys_label.pack(side="bottom", pady=5)
 
-        # Manual step addition below the recording button
         self.manual_frame = ttk.Frame(self.middle_frame)
-        self.manual_frame.grid(row=3, column=0, pady=10)
+        self.manual_frame.grid(row=3, column=0, pady=5)
 
-        # Status section at the bottom middle
-        self.status_label = ttk.Label(self.root, text="Status: Stopped", background="black", foreground="red")
-        self.status_label.pack(side="bottom", pady=10)
+        self.status_label = ctk.CTkLabel(self.root, text="Status: Stopped", text_color="red")
+        self.status_label.pack(side="bottom", pady=5)
+
+
 
     def toggle_macro(self):
         if self.macro_running:
-            # Stop the macro
             self.stop_event.set()
             self.macro_running = False
-            self.status_label.config(text="Status: Stopped", foreground="red")
+            self.status_label.configure(text="Status: Stopped", text_color="red")
         else:
-            # Start the macro
             self.stop_event.clear()
             self.macro_running = True
-            self.status_label.config(text="Status: Running", foreground="green")
+            self.status_label.configure(text="Status: Running", text_color="green")
             loop = self.loop_var.get()
             humanization = self.humanization_var.get()
             self.macro_thread = threading.Thread(
@@ -102,14 +91,12 @@ class MainWindow:
 
     def toggle_recording(self):
         if self.recording:
-            # Stop recording
             self.macro_recorder.stop_recording()
-            self.record_button.config(text="Start Recording")
+            self.record_button.configure(text="Start Recording")
             self.recording = False
         else:
-            # Start recording
             self.macro_recorder.start_recording()
-            self.record_button.config(text="Stop Recording")
+            self.record_button.configure(text="Stop Recording")
             self.recording = True
 
     def add_recorded_step(self, keys, delay):
@@ -118,7 +105,7 @@ class MainWindow:
 
     def change_hotkey(self, new_hotkey):
         self.current_hotkey = new_hotkey
-        self.hotkey_label.config(text=f"Current Hotkey: {new_hotkey}")  # Update UI
+        self.hotkey_label.configure(text=f"Current Hotkey: {new_hotkey}")  # Update UI
     
         # Update keyboard listener with the new hotkey
         if self.keyboard_listener:
@@ -138,7 +125,7 @@ class MainWindow:
             self.persistent_keys, 
             self.current_hotkey, 
             self.change_hotkey,
-            self.update_persistent_keys  # Pass the method to update persistent keys
+            self.update_persistent_keys
         )
 
     def run(self):

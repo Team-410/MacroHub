@@ -1,65 +1,56 @@
-from tkinter import *
-from tkinter import ttk    
-import tkinter as tk
-from tkinter import messagebox
+import customtkinter as ctk
 import json
 import os
+from tkinter import messagebox
 from api_requests.login import login
 from pages.personal_list import show_personal_macros
-from ttkthemes import ThemedTk
 
-# Tiedoston nimi, johon tallennetaan käyttäjätiedot
 CREDENTIALS_FILE = "credentials.json"
 
 def save_credentials(email, password):
-    """Saves credentials to a file"""
+    """Tallenna tunnukset tiedostoon"""
     with open(CREDENTIALS_FILE, "w") as file:
         json.dump({"email": email, "password": password}, file)
 
 def load_credentials():
-    """Loads credentials if found"""
+    """Lataa tunnukset tiedostosta, jos olemassa"""
     if os.path.exists(CREDENTIALS_FILE):
         with open(CREDENTIALS_FILE, "r") as file:
             return json.load(file)
     return {}
 
 def create_main_window():
-    window = ThemedTk(theme="arc")
-    window.configure(bg='black')
-    window.title("Login")
-    window.config(padx=100, pady=80)
+    
+    ctk.set_appearance_mode("dark") 
+    ctk.set_default_color_theme("green")
 
-    # Load credentials
+    window = ctk.CTk()
+    window.title("Login")
+    window.geometry("400x300")
+    window.grid_columnconfigure((0, 1), weight=1)
+
     credentials = load_credentials()
     saved_email = credentials.get("email", "")
     saved_password = credentials.get("password", "")
 
-    # Email
-    tk.Label(window, text="Email:", fg='white', bg='black').grid(row=0, column=0, padx=10, pady=10)
-    email_entry = ttk.Entry(window)
-    email_entry.grid(row=0, column=1, padx=10, pady=10)
+    title_label = ctk.CTkLabel(window, text="Login", font=ctk.CTkFont(size=20, weight="bold"))
+    title_label.grid(row=0, column=0, columnspan=2, pady=(20, 10))
+
+    email_label = ctk.CTkLabel(window, text="Email:")
+    email_label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
+    email_entry = ctk.CTkEntry(window, width=200)
+    email_entry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
     email_entry.insert(0, saved_email)
 
-    # Password
-    tk.Label(window, text="Password:", fg='white', bg='black').grid(row=1, column=0, padx=10, pady=10)
-    password_entry = ttk.Entry(window, show="*")
-    password_entry.grid(row=1, column=1, padx=10, pady=10)
+    password_label = ctk.CTkLabel(window, text="Password:")
+    password_label.grid(row=2, column=0, padx=10, pady=10, sticky="e")
+    password_entry = ctk.CTkEntry(window, show="*", width=200)
+    password_entry.grid(row=2, column=1, padx=10, pady=10, sticky="w")
     password_entry.insert(0, saved_password)
 
-    # Remember Me -checkbox
-    remember_var = tk.BooleanVar(value=bool(saved_email))
-    remember_me_checkbox = tk.Checkbutton(
-        window, 
-        text="Remember Me", 
-        variable=remember_var, 
-        bg="black",    
-        fg="white",     
-        selectcolor="black", 
-        activebackground="black",
-        activeforeground="white"
-    )
-    remember_me_checkbox.grid(row=2, column=0, columnspan=2, pady=5)
-
+    remember_var = ctk.BooleanVar(value=bool(saved_email))
+    remember_me_checkbox = ctk.CTkCheckBox(window, text="Remember Me", variable=remember_var)
+    remember_me_checkbox.grid(row=3, column=0, columnspan=2, pady=(0, 10))
 
     def on_login():
         email = email_entry.get()
@@ -70,24 +61,20 @@ def create_main_window():
             if not success:
                 messagebox.showerror("Error", "Wrong email or password.")
             else:
-                # save credentials
                 if remember_var.get():
                     save_credentials(email, password)
                 else:
                     if os.path.exists(CREDENTIALS_FILE):
-                        os.remove(CREDENTIALS_FILE)  # delete credentials
+                        os.remove(CREDENTIALS_FILE)
 
-                window.destroy()
-                show_personal_macros(window)
+                window.after(500, lambda: (window.destroy(), show_personal_macros()))
         else:
             messagebox.showerror("Input Error", "Fill both inputs")
 
-    # Login-button
-    login_button = ttk.Button(window, text="Login", command=on_login)
-    login_button.grid(row=3, column=0, columnspan=2, pady=10)
+    login_button = ctk.CTkButton(window, text="Login", command=on_login)
+    login_button.grid(row=4, column=0, columnspan=2, pady=20)
 
     window.mainloop()
 
-# Suorita sovellus
 if __name__ == "__main__":
     create_main_window()
