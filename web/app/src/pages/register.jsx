@@ -103,7 +103,7 @@ const register = () => {
                         required
                         fullWidth
                         name="fullname"
-                        label="fullname"
+                        label="username"
                         type="fullname"
                         id="fullname"
                         onChange={handleChange}

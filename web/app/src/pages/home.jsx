@@ -26,7 +26,7 @@ function HomePage() {
         setShowText(true);
 
         axios
-            .get(`${API_URL}/api/macros`)
+            .get(`${API_URL}/api/frontpagemacros`)
             .then((response) => {
                 setMacros(response.data.macros);
             })

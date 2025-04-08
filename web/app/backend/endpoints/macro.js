@@ -77,10 +77,25 @@ router.get('/macros', async (req, res) => {
     }
 });
 
+router.get('/frontpagemacros', async (req, res) => {
+    try {
+        const [results] = await connection2.query('SELECT * FROM macro LIMIT 9');
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Macros not found' });
+        }
+
+        res.status(200).json({ macros: results });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Error in retrieving macros' });
+    }
+});
+
 // GET-path for all macro apps (marketplace)
 router.get('/macros/apps', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT DISTINCT app FROM macro LIMIT 10');
+        const [results] = await connection2.query('SELECT DISTINCT app FROM macro LIMIT 15');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'apps not found' });

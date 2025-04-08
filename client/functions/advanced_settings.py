@@ -1,12 +1,17 @@
 import tkinter as tk
 import customtkinter as ctk
+import winsound
 
 class AdvancedSettings:
     def __init__(self, parent, loop_var, humanization_var, persistent_keys, current_hotkey, update_hotkey_callback, update_persistent_keys):
         self.window = ctk.CTkToplevel(parent)
+        self.window.transient(parent)     
+        self.window.grab_set()             
+        self.window.focus_force()          
         self.window.lift()
-        self.window.focus() 
         self.window.title("Advanced Settings")
+
+        winsound.MessageBeep()
 
         self.loop_var = loop_var
         self.humanization_var = humanization_var

@@ -41,7 +41,7 @@ const login = () => {
 
             if (response.status === 200) {
                 console.log("Kirjautuminen onnistui:", response);
-                alert("Kirjautuminen onnistui!");
+                alert("Login failed!");
 
                 // Save to JWT localStorage
                 localStorage.setItem("authToken", response.data.token);
@@ -53,7 +53,7 @@ const login = () => {
                 window.location.reload();
 
             } else {
-                alert("Kirjautuminen epäonnistui: " + response.statusText);
+                alert("Login failedi: " + response.statusText);
             }
         } catch (error) {
 

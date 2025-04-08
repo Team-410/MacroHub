@@ -58,7 +58,7 @@ def add_details(macro: MacroRunner):
 
     category_label = ctk.CTkLabel(form_frame, text="Category:")
     category_label.grid(row=3, column=0, padx=20, pady=10, sticky="w")
-    category_entry = ctk.CTkEntry(form_frame)
+    category_entry = ctk.CTkOptionMenu(form_frame, values=["Gaming", "Productivity", "Command Line", "Web", "Other"])
     category_entry.grid(row=3, column=1, padx=20, pady=10, sticky="ew")
 
     macro_type_label = ctk.CTkLabel(form_frame, text="Macro Type:")
