@@ -98,8 +98,8 @@ function HomePage() {
                         padding: "15px 30px",
                     }}
                     component="a"
-                    href="/macrohub1.03"
-                    download="macrohub1.03"
+                    href="/MacroHubInstaller.exe"
+                    download="MacroHubInstaller.exe"
                 >
                     Download
                 </Button>
