@@ -9,7 +9,7 @@ def load_config():
     if getattr(sys, 'frozen', False):
         root_path = Path(sys.executable).parent
     else:
-        root_path = Path(__file__).resolve().parent.parent  # Siirrytään client-kansioon
+        root_path = Path(__file__).resolve().parent.parent 
 
     config_path = root_path / "config.json"
     print(f"config.json polku: {config_path}")
