@@ -11,7 +11,8 @@ def load_config():
     else:
         root_path = Path(__file__).resolve().parent.parent  # Siirrytään client-kansioon
 
-    config_path = root_path / "dist" / "config.json"
+    config_path = root_path / "config.json"
+    print(f"config.json polku: {config_path}")
 
     if config_path.exists():
         try:
