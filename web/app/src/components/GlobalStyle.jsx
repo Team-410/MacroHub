@@ -13,6 +13,7 @@ const GlobalStyle = () => {
                     display: flex;
                     justify-content: center;
                     padding-bottom: 50px;
+                    width: 100%;
                 }
 
                 ::-webkit-scrollbar {
@@ -30,6 +31,11 @@ const GlobalStyle = () => {
 
                 ::-webkit-scrollbar-thumb:hover {
                     background-color: #90a4ae;
+                }
+
+                #root {
+                    width: 100%;
+                    max-width: 100%;
                 }
             `}
         </style>

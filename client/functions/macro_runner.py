@@ -62,7 +62,7 @@ class MacroRunner:
     
     def map_display_to_key(self, display_name):
         reverse_special_keys = {
-            "Spacebar": " ",
+            "Spacebar": Key.space,
             "Enter": Key.enter,
             "Tab": Key.tab,
             "Escape": Key.esc,
@@ -70,5 +70,10 @@ class MacroRunner:
             "Ctrl": Key.ctrl,
             "Alt": Key.alt,
             "Backspace": Key.backspace,
+            "Up": Key.up,
+            "Down": Key.down,
+            "Left": Key.left,
+            "Right": Key.right,
+            "Command": Key.cmd,
         }
         return reverse_special_keys.get(display_name, display_name)

@@ -41,7 +41,7 @@ const login = () => {
 
             if (response.status === 200) {
                 console.log("Kirjautuminen onnistui:", response);
-                alert("Login failed!");
+                alert("Login succesful!");
 
                 // Save to JWT localStorage
                 localStorage.setItem("authToken", response.data.token);

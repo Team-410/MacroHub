@@ -22,7 +22,6 @@ def map_key_for_display(key):
     }
     return special_keys.get(key, key)
 
-# Function to map user-friendly key names back to functional keys
 def map_display_to_key(display_name):
     reverse_special_keys = {
         "Spacebar": " ",
@@ -36,7 +35,6 @@ def map_display_to_key(display_name):
     }
     return reverse_special_keys.get(display_name, display_name)
 
-# Function to run the macro with Looping and Humanization
 def run_macro(steps, persistent_keys, stop_event, loop=False, humanization=False):
     keyboard_controller = Controller()
     persistent_keys_pressed = []
@@ -269,7 +267,7 @@ macro_steps = []
 macro_running = False
 stop_event = threading.Event()
 macro_thread = None
-current_hotkey = "F10"  # Default hotkey
+current_hotkey = "F3"  # Default hotkey
 persistent_keys = []  # List of persistent keys
 
 # Main frame

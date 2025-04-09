@@ -13,7 +13,7 @@ const About = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            setBackgroundImage(window.innerWidth < 520 ? mobileHeader : headerImage);
+            setBackgroundImage(window.innerWidth < 600 ? mobileHeader : headerImage);
         };
 
         handleResize();
@@ -31,7 +31,8 @@ const About = () => {
                     <Box
                         sx={{
                             padding: 5,
-                            height: { xs: 300, sm: 500 },
+                            height: { xs: 200, sm: 350 },
+                            width: { xs: 200, sm: 'auto' },
                             backgroundImage: `url(${backgroundImage})`,
                             backgroundSize: "cover",
                             backgroundPosition: "center",

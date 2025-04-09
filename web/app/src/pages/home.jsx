@@ -92,7 +92,9 @@ function HomePage() {
                     variant="contained"
                     sx={{
                         opacity: showText ? 1 : 0,
-                        transform: showText ? "translateX(0)" : "translateX(-150px)",
+                        transform: showText
+                            ? "translateX(0)"
+                            : "translateX(-150px)",
                         transition: "all 0.8s cubic-bezier(0.25, 1.5, 0.5, 1)",
                         mt: "30px",
                         padding: "15px 30px",
@@ -106,7 +108,7 @@ function HomePage() {
 
                 <Box className="line"></Box>
 
-                <Typography className="heading">Popular macros</Typography>
+                <Typography className="heading">Latest macros</Typography>
 
                 {loading ? (
                     <Box
@@ -123,8 +125,10 @@ function HomePage() {
                             mt: 4,
                             display: "flex",
                             flexWrap: "wrap",
-                            gap: 2,
-                            justifyContent: "start",
+                            gap: '16px',
+                            justifyContent: "flex-start",
+                            width: "100%",
+                            maxWidth: "100%",
                         }}
                     >
                         {macros.map((macro) => (
@@ -159,7 +163,13 @@ function HomePage() {
                                         <Typography
                                             variant="body2"
                                             color="text.secondary"
-                                            sx={{ mt: 1 }}
+                                            sx={{
+                                                mt: 1,
+                                                display: "-webkit-box",
+                                                WebkitLineClamp: 3,
+                                                WebkitBoxOrient: "vertical",
+                                                overflow: "hidden",
+                                            }}
                                         >
                                             {macro.macrodescription}
                                         </Typography>
@@ -174,5 +184,6 @@ function HomePage() {
         </Container>
     );
 }
+
 
 export default HomePage;

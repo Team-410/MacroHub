@@ -64,7 +64,7 @@ const router = express.Router();
 // GET-path for all macros (marketplace)
 router.get('/macros', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT * FROM macro LIMIT 100');
+        const [results] = await connection2.query('SELECT * FROM macro order by macroid DESC');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Macros not found' });
@@ -79,7 +79,7 @@ router.get('/macros', async (req, res) => {
 
 router.get('/frontpagemacros', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT * FROM macro LIMIT 9');
+        const [results] = await connection2.query('SELECT * FROM macro ORDER BY macroid DESC LIMIT 9');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Macros not found' });
@@ -93,26 +93,26 @@ router.get('/frontpagemacros', async (req, res) => {
 });
 
 // GET-path for all macro apps (marketplace)
-router.get('/macros/apps', async (req, res) => {
+router.get('/macros/category', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT DISTINCT app FROM macro LIMIT 15');
+        const [results] = await connection2.query('SELECT DISTINCT category FROM macro');
 
         if (results.length === 0) {
-            return res.status(404).json({ message: 'apps not found' });
+            return res.status(404).json({ message: 'categories not found' });
         }
 
-        res.status(200).json({ apps: results });
+        res.status(200).json({ categories: results });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Error in retrieving apps' });
+        res.status(500).json({ message: 'Error in retrieving categories' });
     }
 });
 
 // GET-path for all macros in specific categorie (marketplace)
-router.get('/macros/app/:app', async (req, res) => {
-    const { app } = req.params;
+router.get('/macros/category/:category', async (req, res) => {
+    const { category } = req.params;
     try {
-        const [results] = await connection2.query('SELECT * FROM macro WHERE app = ? LIMIT 5', [app]);
+        const [results] = await connection2.query('SELECT * FROM macro WHERE category = ?', [category]);
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Categories not found' });

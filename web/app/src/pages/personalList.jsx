@@ -2,7 +2,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 
-import { Box, Typography, Card, CardContent } from "@mui/material";
+import { Box, Typography, Card, CardContent, Container } from "@mui/material";
 
 function PersonalList() {
     const [list, setList] = useState([]);
@@ -41,7 +41,7 @@ function PersonalList() {
     }, []);
 
     return (
-        <Box sx={{ mt: 12, padding: 1}}>
+        <Container sx={{ mt: 4 }}>
             <Typography sx={{ fontSize: '22px', textAlign: 'center' }}>Personal List</Typography>
             <Box
                 sx={{
@@ -90,7 +90,7 @@ function PersonalList() {
                     </Card>
                 ))}
             </Box>
-        </Box>
+        </Container>
     );
 }
 

@@ -16,9 +16,11 @@ import { Link } from 'react-router-dom';
 import Footer from "../components/footer";
 import { useTheme } from "@mui/material/styles";
 
+import "../style/home.css";
+
 export default function Marketplace() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [apps, setApps] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [macros, setMacros] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -28,13 +30,13 @@ export default function Marketplace() {
 
     useEffect(() => {
         axios
-            .get(`${API_URL}/api/macros/apps`)
+            .get(`${API_URL}/api/macros/category`)
             .then((response) => {
                 console.log(response);
-                setApps(response.data.apps);
+                setCategories(response.data.categories);
             })
             .catch((error) => {
-                console.error("Error fetching apps:", error);
+                console.error("Error fetching categories:", error);
             })
             .finally(() => {
                 setLoading(false);
@@ -134,8 +136,8 @@ export default function Marketplace() {
                         mb: 6,
                     }}
                 >
-                    {apps.length > 0 ? (
-                        apps.map((appItem, index) => (
+                    {categories.length > 0 ? (
+                        categories.map((item, index) => (
                             <Box
                                 key={index}
                                 sx={{
@@ -149,11 +151,13 @@ export default function Marketplace() {
                                     },
                                 }}
                                 onClick={() =>
-                                    navigate(`/marketplace/app/${appItem.app}`)
+                                    navigate(
+                                        `/marketplace/category/${item.category}`
+                                    )
                                 }
                             >
                                 <Typography variant="body1">
-                                    {appItem.app}
+                                    {item.category}
                                 </Typography>
                             </Box>
                         ))
@@ -163,16 +167,13 @@ export default function Marketplace() {
                             color="text.secondary"
                             sx={{ mt: 2 }}
                         >
-                            No apps found.
+                            No categories found.
                         </Typography>
                     )}
                 </Box>
             )}
 
             <Box sx={{ mt: 4 }}>
-                <Typography variant="h4" sx={{ fontWeight: 300 }} gutterBottom>
-                    Recent
-                </Typography>
 
                 <Box
                     sx={{
@@ -185,16 +186,7 @@ export default function Marketplace() {
                     {macros.map((macro) => (
                         <Card
                             key={macro.macroid}
-                            sx={{
-                                width: 300,
-                                borderRadius: 4,
-                                border: "1px solid #333",
-                                cursor: "pointer",
-                                transition: "border 0.3s",
-                                "&:hover": {
-                                    borderColor: "#646cff",
-                                },
-                            }}
+                            className="macrocard"
                         >
                             <Link
                                 to={`/macro/${macro.macroid}`}
@@ -223,7 +215,13 @@ export default function Marketplace() {
                                     <Typography
                                         variant="body2"
                                         color="text.secondary"
-                                        sx={{ mt: 1 }}
+                                        sx={{
+                                            mt: 1,
+                                            display: "-webkit-box",
+                                            WebkitLineClamp: 3,
+                                            WebkitBoxOrient: "vertical",
+                                            overflow: "hidden",
+                                        }}
                                     >
                                         {macro.macrodescription}
                                     </Typography>

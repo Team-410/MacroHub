@@ -41,8 +41,13 @@ class MacroRecorder:
                 keyboard.Key.ctrl: "Ctrl",
                 keyboard.Key.alt: "Alt",
                 keyboard.Key.backspace: "Backspace",
+                keyboard.Key.up: "Up",
+                keyboard.Key.down: "Down",
+                keyboard.Key.left: "Left",
+                keyboard.Key.right: "Right",
+                keyboard.Key.cmd: "Command",
             }
-            key_char = special_keys.get(key, str(key)) 
+            key_char = special_keys.get(key, str(key))
 
             # FIXME: Stop recording when space is pressed
             if key_char == "Key.space":
@@ -50,3 +55,4 @@ class MacroRecorder:
 
         print(f"Tallennettu näppäin: {key_char}")
         self.add_step_callback(key_char, delay)
+
