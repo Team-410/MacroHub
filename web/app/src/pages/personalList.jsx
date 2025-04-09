@@ -41,7 +41,7 @@ function PersonalList() {
     }, []);
 
     return (
-        <Container sx={{ mt: 4 }}>
+        <Container sx={{ mt: 12 }}>
             <Typography sx={{ fontSize: '22px', textAlign: 'center' }}>Personal List</Typography>
             <Box
                 sx={{
@@ -49,7 +49,7 @@ function PersonalList() {
                     display: "flex",
                     flexWrap: "wrap",
                     gap: 2,
-                    justifyContent: "center",
+                    justifyContent: "left",
                 }}
             >
                 {list.map((item, index) => (
@@ -81,7 +81,13 @@ function PersonalList() {
                                 <Typography
                                     variant="body2"
                                     color="text.secondary"
-                                    sx={{ mt: 1 }}
+                                    sx={{
+                                        mt: 1,
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: 3,
+                                        WebkitBoxOrient: "vertical",
+                                        overflow: "hidden",
+                                    }}
                                 >
                                     {item.macrodescription}
                                 </Typography>
