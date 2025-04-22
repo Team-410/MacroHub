@@ -2,12 +2,11 @@ from tkinter import ttk, messagebox
 
 class PersistentKeysManager:
     def __init__(self, parent, persistent_keys):
-        self.persistent_keys = persistent_keys  # Initialize persistent keys
-        self.parent = parent  # Parent window to update display
+        self.persistent_keys = persistent_keys
+        self.parent = parent
         self.setup_persistent_keys_section(parent)
 
     def setup_persistent_keys_section(self, parent):
-        # Display the section title
         ttk.Label(parent, text="Persistent Keys", font=("Helvetica", 12, "bold")).grid(row=0, column=0, columnspan=3, pady=5)
 
         # Label that will display the current persistent keys

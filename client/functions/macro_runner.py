@@ -49,7 +49,7 @@ class MacroRunner:
                         random_delay = random.uniform(0, 0.5) 
                         time.sleep(random_delay)
 
-                    time.sleep(0.2)  # Pieni viive askelten välillä
+                    time.sleep(0.2)
 
 
                 if not loop:

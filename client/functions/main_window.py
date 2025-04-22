@@ -24,7 +24,11 @@ class MainWindow:
         self.macro_running = False
         self.stop_event = threading.Event()
         self.macro_thread = None
+<<<<<<< Updated upstream
         self.current_hotkey = "F3"  # Default hotkey
+=======
+        self.current_hotkey = "F10"
+>>>>>>> Stashed changes
         self.recording = False
         self.macro_recorder = MacroRecorder(self.add_recorded_step)
 
@@ -105,9 +109,8 @@ class MainWindow:
 
     def change_hotkey(self, new_hotkey):
         self.current_hotkey = new_hotkey
-        self.hotkey_label.configure(text=f"Current Hotkey: {new_hotkey}")  # Update UI
+        self.hotkey_label.configure(text=f"Current Hotkey: {new_hotkey}")
     
-        # Update keyboard listener with the new hotkey
         if self.keyboard_listener:
             self.keyboard_listener.update_hotkey(new_hotkey)
 

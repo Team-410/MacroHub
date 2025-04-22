@@ -5,7 +5,6 @@ from pathlib import Path
 def load_config():
     """ Lataa config.json-tiedoston sisällön oikeasta sijainnista """
     
-    # Määritä config.json -polku
     if getattr(sys, 'frozen', False):
         root_path = Path(sys.executable).parent
     else:
