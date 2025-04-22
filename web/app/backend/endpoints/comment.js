@@ -1,5 +1,5 @@
 import express from 'express';
-import connection2 from '../connection.js';
+import {  getConnection } from '../connection.js';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -75,7 +75,8 @@ router.get('/macros/:id/comments', async (req, res) => {
     const sql = 'SELECT * FROM comment WHERE macroid = ? ORDER BY timestamp DESC';
     
     try {
-        const [results] = await connection2.query(sql, [macroId]);
+        const connection = await getConnection();
+        const [results] = connection.query(sql, [macroId]);
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Comments not found' });
@@ -134,7 +135,6 @@ router.post('/macros/:id/comments', async (req, res) => {
     const { fullname, comment } = req.body;
     const token = req.headers.authorization?.split(' ')[1];
 
-    // Validate inputs
     if (!macroId || isNaN(macroId) || macroId <= 0) {
         return res.status(400).json({ message: 'Invalid macro ID' });
     }
@@ -144,10 +144,11 @@ router.post('/macros/:id/comments', async (req, res) => {
     }
 
     try {
+        const connection = await getConnection();
         const decoded = jwt.verify(token, JWT_SECRET);
 
         const sql = 'INSERT INTO comment (macroid, fullname, comment) VALUES (?, ?, ?)';
-        const [results] = await connection2.query(sql, [macroId, fullname, comment]);
+        const [results] = await connection.query(sql, [macroId, fullname, comment]);
 
         res.status(201).json({ message: 'Comment added successfully', commentId: results.insertId });
     } catch (err) {

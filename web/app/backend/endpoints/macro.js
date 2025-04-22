@@ -1,5 +1,5 @@
 import express from 'express';
-import connection2 from '../connection.js';
+import { getConnection } from '../connection.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -64,7 +64,8 @@ const router = express.Router();
 // GET-path for all macros (marketplace)
 router.get('/macros', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT * FROM macro order by macroid DESC');
+        const connection = await getConnection();
+        const [results] = await connection.query('SELECT * FROM macro order by macroid DESC');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Macros not found' });
@@ -79,7 +80,8 @@ router.get('/macros', async (req, res) => {
 
 router.get('/frontpagemacros', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT * FROM macro ORDER BY macroid DESC LIMIT 9');
+        const connection = await getConnection();
+        const [results] = await connection.query('SELECT * FROM macro ORDER BY macroid DESC LIMIT 9');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Macros not found' });
@@ -95,7 +97,8 @@ router.get('/frontpagemacros', async (req, res) => {
 // GET-path for all macro apps (marketplace)
 router.get('/macros/category', async (req, res) => {
     try {
-        const [results] = await connection2.query('SELECT DISTINCT category FROM macro');
+        const connection = await getConnection();
+        const [results] = await connection.query('SELECT DISTINCT category FROM macro');
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'categories not found' });
@@ -111,8 +114,9 @@ router.get('/macros/category', async (req, res) => {
 // GET-path for all macros in specific categorie (marketplace)
 router.get('/macros/category/:category', async (req, res) => {
     const { category } = req.params;
+    const connection = await getConnection();
     try {
-        const [results] = await connection2.query('SELECT * FROM macro WHERE category = ?', [category]);
+        const [results] = await connection.query('SELECT * FROM macro WHERE category = ?', [category]);
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Categories not found' });
@@ -153,6 +157,7 @@ router.get('/macros/category/:category', async (req, res) => {
 // GET-path to get one macro (macropage)
 router.get('/macros/:id', async (req, res) => {
     const macroId = req.params.id;
+    const connection = await getConnection();
 
     if (!macroId || isNaN(macroId)) {
         return res.status(400).json({ message: 'Invalid macro ID' });
@@ -162,7 +167,7 @@ router.get('/macros/:id', async (req, res) => {
 
     try {
         // Using promisified query method
-        const [results] = await connection2.query(sql, [macroId]);
+        const [results] = await connection.query(sql, [macroId]);
 
         if (results.length === 0) {
             return res.status(404).json({ message: 'Macro not found' });
@@ -221,11 +226,12 @@ router.get('/personal_list', async (req, res) => {
     }
     
     const userid = decoded.userId;
+    const connection = await getConnection();
 
     const sql = 'SELECT * FROM personal_list as pl JOIN macro as m on pl.macroid = m.macroid WHERE pl.userid = ?';
 
     try {
-        const [results] = await connection2.query(sql, [userid]);
+        const [results] = await connection.query(sql, [userid]);
         if (results.length === 0) {
             return res.status(404).json({ message: 'List not found' });
         }
@@ -285,8 +291,9 @@ router.post('/personal_list', async (req, res) => {
         return res.status(400).json({ message: 'Invalid macro ID' });
     }
     const checkMacroSql = 'SELECT * FROM macro WHERE macroid = ?';
+    const connection = await getConnection();
     try {
-        const [macroResults] = await connection2.query(checkMacroSql, [macroid]);
+        const [macroResults] = await connection.query(checkMacroSql, [macroid]);
         if (macroResults.length === 0) {
             return res.status(404).json({ message: 'Macro ID not found' });
         }
@@ -298,7 +305,7 @@ router.post('/personal_list', async (req, res) => {
     const existingPersonalListSql = 'SELECT * FROM personal_list WHERE userid = ? AND macroid = ?';
 
     try {
-        const [results] = await connection2.query(existingPersonalListSql, [userid, macroid]);
+        const [results] = await connection.query(existingPersonalListSql, [userid, macroid]);
         if (results.length > 0) {
             return res.status(400).json({ message: 'Macro already in personal list' });
         }
@@ -311,7 +318,7 @@ router.post('/personal_list', async (req, res) => {
     const sql = 'INSERT INTO personal_list (userid, macroid) VALUES (?, ?)';
 
     try {
-        const [results] = await connection2.query(sql, [userid, macroid]);
+        const [results] = await connection.query(sql, [userid, macroid]);
         res.status(201).json({ message: 'Macro added to personal list', listId: results.insertId });
     } catch (err) {
         console.error(err);
@@ -351,6 +358,7 @@ router.post('/personal_list', async (req, res) => {
 router.delete('/personal_list', async (req, res) => {
     const { macroid } = req.body;
     const token = req.headers.authorization?.split(' ')[1];
+    const connection = await getConnection();
 
     if (!token) {
         return res.status(400).json({ message: 'Token missing or malformed' });
@@ -372,7 +380,7 @@ router.delete('/personal_list', async (req, res) => {
     const deleteSql = 'DELETE FROM personal_list WHERE userid = ? AND macroid = ?';
 
     try {
-        const [results] = await connection2.query(deleteSql, [userid, macroid]);
+        const [results] = await connection.query(deleteSql, [userid, macroid]);
         if (results.affectedRows === 0) {
             return res.status(404).json({ message: 'Macro not found in personal list' });
         }
@@ -387,6 +395,7 @@ router.delete('/personal_list', async (req, res) => {
 // POST-path to add macro (python client)
 router.post('/save_macro', async (req, res) => {
     const macro_object = req.body;
+    const connection = await getConnection();
 
     const token = req.headers.authorization?.split(' ')[1];
 
@@ -413,7 +422,7 @@ router.post('/save_macro', async (req, res) => {
 
     let macroId;
     try {
-        const [results] = await connection2.query(addMacro, [
+        const [results] = await connection.query(addMacro, [
             macro_object.macroname,
             macro_object.macrodescription,
             macro_object.app,
@@ -429,7 +438,7 @@ router.post('/save_macro', async (req, res) => {
 
     const addMacroToPersonalList = "INSERT INTO personal_list (userid, macroid) VALUES (?, ?)";
     try {
-        await connection2.query(addMacroToPersonalList, [userid, macroId]);
+        await connection.query(addMacroToPersonalList, [userid, macroId]);
 
         return res.status(201).json({ message: 'Macro added successfully', macroid: macroId });
     } catch (err) {

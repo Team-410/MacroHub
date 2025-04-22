@@ -1,5 +1,5 @@
 import express from 'express';
-import connection2 from '../connection.js';
+import { getConnection } from '../connection.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -163,6 +163,7 @@ router.get("/token/userinfo", (req, res) => {
 router.post('/adduser', async (req, res) => {
     console.log('Request reached adduser path', req.body);
     const { email, password, fullname } = req.body;
+    const connection = await getConnection();
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Fill all inputs.' });
@@ -174,7 +175,7 @@ router.post('/adduser', async (req, res) => {
 
     try {
         const checkEmailSql = 'SELECT * FROM user WHERE email = ?';
-        const [results] = await connection2.query(checkEmailSql, [email]);
+        const [results] = await connection.query(checkEmailSql, [email]);
 
         if (results.length > 0) {
             return res.status(400).json({ error: 'This email is already used' });
@@ -184,7 +185,7 @@ router.post('/adduser', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const sql = 'INSERT INTO user (email, password, fullname) VALUES (?, ?, ?)';
-        const [insertResult] = await connection2.query(sql, [email, hashedPassword, fullname]);
+        const [insertResult] = await connection.query(sql, [email, hashedPassword, fullname]);
 
         res.status(201).json({ message: 'User added successfully', userId: insertResult.insertId });
 
@@ -232,6 +233,7 @@ router.post('/adduser', async (req, res) => {
 // POST-Path for login (login)
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
+    const connection = await getConnection();
 
     if (!email || !password) {
         return res.status(400).json({ error: 'Fill all fields' });
@@ -239,7 +241,7 @@ router.post('/login', async (req, res) => {
 
     try {
         const sql = 'SELECT * FROM user WHERE email = ?';
-        const [results] = await connection2.query(sql, [email]); 
+        const [results] = await connection.query(sql, [email]); 
 
         if (results.length === 0) {
             return res.status(404).json({ error: 'Check email or password' });

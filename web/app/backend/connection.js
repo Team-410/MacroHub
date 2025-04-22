@@ -5,30 +5,53 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+let connection;
+
 async function createConnection() {
-    return await mysql2.createConnection({
+    const conn = await mysql2.createConnection({
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
         port: process.env.DB_PORT
     });
-}
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename)
 
-const connection = await createConnection();
-// Lue SQL-tiedosto
-const sqlScript = fs.readFileSync(path.join(__dirname, 'createScript.sql'), 'utf-8');
+    console.log('✅ MySQL connection established');
+    return conn;
+}
+
+export async function getConnection() {
+    if (!connection) {
+        console.warn('🔁 No MySQL connection. Connecting...');
+        connection = await createConnection();
+    } else {
+        try {
+            await connection.ping();
+        } catch (err) {
+            console.warn('🔁 Connection lost. Reconnecting...');
+            connection = await createConnection();
+        }
+    }
+    return connection;
+}
 
 export async function initializeDatabase() {
+    const conn = await getConnection();
 
-    console.log('DB connected');
+    console.log('✅ Running SQL script to initialize database');
 
-    const sqlCommands = sqlScript.split(';').map(command => command.trim()).filter(command => command.length > 0);
+    const sqlScript = fs.readFileSync(path.join(__dirname, 'createScript.sql'), 'utf-8');
+    const sqlCommands = sqlScript
+        .split(';')
+        .map(command => command.trim())
+        .filter(command => command.length > 0);
+
     for (const command of sqlCommands) {
-        await connection.query(command)
+        await conn.query(command);
     }
-}
 
-export default connection;
+    console.log('✅ Database initialized');
+}

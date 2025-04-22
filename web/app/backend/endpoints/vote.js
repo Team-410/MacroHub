@@ -1,5 +1,5 @@
 import express from 'express';
-import connection2 from '../connection.js';
+import { getConnection } from '../connection.js';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -64,14 +64,15 @@ const router = express.Router();
 // Get total votes for a specific macro
 router.get("/macro/:macroid/votes", async (req, res) => {
     const { macroid } = req.params;
+    const connection = await getConnection();
 
     try {
-        const [[{ upcount }]] = await connection2.query(
+        const [[{ upcount }]] = await connection.query(
             "SELECT COUNT(*) AS upcount FROM vote WHERE macroid = ? AND vote = 1",
             [macroid]
         );    
 
-        const [[{ downcount }]] = await connection2.query(
+        const [[{ downcount }]] = await connection.query(
             "SELECT COUNT(*) AS downcount FROM vote WHERE macroid = ? AND vote = 0",
             [macroid]
         );    
@@ -136,9 +137,10 @@ router.get("/macro/:macroid/uservote", async (req, res) => {
     }
 
     const userId = decoded.userId;
+    const connection = await getConnection();
 
     try {
-        const [existingVote] = await connection2.query(
+        const [existingVote] = await connection.query(
             "SELECT * FROM vote WHERE userid = ? AND macroid = ?",
             [userId, macroid]
         );
@@ -199,9 +201,10 @@ router.delete("/macro/:macroid/uservote/remove", async (req, res) => {
     }
 
     const userId = decoded.userId;
+    const connection = await getConnection();
 
     try {
-        const [removeVote] = await connection2.query(
+        const [removeVote] = await connection.query(
             "DELETE  FROM vote WHERE userid = ? AND macroid = ?",
             [userId, macroid]
         );
@@ -274,20 +277,21 @@ router.post("/macro/:macroid/vote", async (req, res) => {
     }
     
     const userId = decoded.userId;
+    const connection = await getConnection();
 
     try {
-        const [existingVote] = await connection2.query(
+        const [existingVote] = await connection.query(
             "SELECT * FROM vote WHERE userid = ? AND macroid = ?",
             [userId, macroid]
         );
 
         if (existingVote.length > 0) {
-            await connection2.query(
+            await connection.query(
                 "UPDATE vote SET vote = ? WHERE userid = ? AND macroid = ?",
                 [voteValue, userId, macroid]
             );
         } else {
-            await connection2.query(
+            await connection.query(
                 "INSERT INTO vote (userid, macroid, vote) VALUES (?, ?, ?)",
                 [userId, macroid, voteValue]
             );
@@ -347,7 +351,8 @@ router.post("/macro/:macroid/voted"), async (req, res) => {
     const sql = 'SELECT * FROM vote WHERE userid = ?';
 
     try {
-        const [results] = await connection2.query(sql, [userid]);
+        const connection = await getConnection();
+        const [results] = await connection.query(sql, [userid]);
         if (results.length === 0) {
             return res.status(404).json({ message: 'Vote not found' });
         }
