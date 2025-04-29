@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="web/app/public/logo.png" alt="Logo" width="300" />
+</p>
+
 # 📦 MacroHub
 
 **Contributors:** Juho Järvinen, Makar Korostik, Jehu Enberg, Kaito Stenroos
