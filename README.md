@@ -10,7 +10,6 @@
   <img src="https://img.shields.io/badge/python-3.8%2B-blue" alt="Python">
   <img src="https://img.shields.io/github/contributors/Team-410/MacroHub" alt="Contributors">
   <img src="https://img.shields.io/badge/React-%3E%3D16.8-blue" alt="React">
-  <img src="https://img.shields.io/badge/React-%3E%3D16.8-blue" alt="React">
 </p>
 
 
