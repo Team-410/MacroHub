@@ -2,6 +2,18 @@
   <img src="web/app/public/logo.png" alt="Logo" width="300" />
 </p>
 
+<p align="center">
+  <img src="https://github.com/Team-410/MacroHub/workflows/CI/badge.svg" alt="Build">
+  <img src="https://img.shields.io/github/v/release/Team-410/MacroHub" alt="Release">
+  <img src="https://img.shields.io/github/license/Team-410/MacroHub" alt="License">
+  <img src="https://img.shields.io/badge/node-%3E%3D14.0-blue" alt="Node">
+  <img src="https://img.shields.io/badge/python-3.8%2B-blue" alt="Python">
+  <img src="https://img.shields.io/github/contributors/Team-410/MacroHub" alt="Contributors">
+  <img src="https://img.shields.io/badge/React-%3E%3D16.8-blue" alt="React">
+  <img src="https://img.shields.io/badge/React-%3E%3D16.8-blue" alt="React">
+</p>
+
+
 # 📦 MacroHub
 
 **Contributors:** Juho Järvinen, Makar Korostik, Jehu Enberg, Kaito Stenroos
