@@ -76,7 +76,9 @@ node server.js
 # Step 0: Navigate to the frontend directory
 cd ./web/app/
 
-# Step 1: Run the development server
+# Step 2: npm install
+
+# Step 3: Run the development server
 npm run dev
 ```
 
