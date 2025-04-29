@@ -7,13 +7,14 @@
 **Contributors:** Juho Järvinen, Makar Korostik, Jehu Enberg, Kaito Stenroos
 
 ## 🚀 Tech Stack
-- **Frontend:** React
-- **Backend:** Python Script / Flask App
+- **Frontend:** React, Vite
+- **Backend:** Node
+- **Local client** Python, Inno installer
 - **Database:** MySQL
 
 ---
 
-## 📋 Usage Guide
+## 📋 Developer Usage Guide
 
 ### 🐍 PYTHON CLIENT
 ```bash
@@ -31,13 +32,27 @@ python .\main.py
 OPTIONAL(no login): python .\create_macro.py 
 ```
 
+### ⚙️ INSTALLER
+```bash
+# Step 0: Download inno compiler
+
+# Step 1: Navigate to the installer directory
+cd ./client/installer
+
+# Step 2: Choose the correct path to ouput dir
+
+# Step 3: Choose the correct paths to all sources
+
+# Step 4: Press run
+
+```
+
 ### ⚙️ BACKEND
 ```bash
 # Step 0: Navigate to the backend directory
 cd ./web/app/backend/
 
-# Step 1: (Optional) Create authenticator.js if not available
-# Step 2: Start the backend server
+# Step 1: Start the backend server
 node server.js
 ```
 
