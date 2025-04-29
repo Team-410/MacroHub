@@ -36,18 +36,22 @@ OPTIONAL(no login): python .\create_macro.py
 ```bash
 # Step 0: Download inno compiler
 
-# Step 1: Navigate to the installer directory
+# Step 1: cd ./client
+
+# Step 2: Create exe file pyinstaller --onedir --name Macrohub main.py
+
+# Step 3: Navigate to the installer directory
 cd ./client/installer
 
-# Step 2: Choose the correct path to ouput dir
+# Step 4: Choose the correct path to ouput dir
 
-# Step 3: Choose the correct paths to all sources
+# Step 5: Choose the correct paths to all sources
 
-# Step 4: Press run
+# Step 6: Press run
 
 ```
 
-### ⚙️ BACKEND
+### 🛢️ BACKEND
 ```bash
 # Step 0: Navigate to the backend directory
 cd ./web/app/backend/
