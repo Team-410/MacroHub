@@ -24,11 +24,7 @@ class MainWindow:
         self.macro_running = False
         self.stop_event = threading.Event()
         self.macro_thread = None
-<<<<<<< Updated upstream
         self.current_hotkey = "F3"  # Default hotkey
-=======
-        self.current_hotkey = "F10"
->>>>>>> Stashed changes
         self.recording = False
         self.macro_recorder = MacroRecorder(self.add_recorded_step)
 
