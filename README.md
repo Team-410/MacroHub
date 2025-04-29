@@ -1,15 +1,31 @@
+<p align="center">
+  <img src="web/app/public/logo.png" alt="Logo" width="300" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/Team-410/MacroHub/workflows/CI/badge.svg" alt="Build">
+  <img src="https://img.shields.io/github/v/release/Team-410/MacroHub" alt="Release">
+  <img src="https://img.shields.io/github/license/Team-410/MacroHub" alt="License">
+  <img src="https://img.shields.io/badge/node-%3E%3D14.0-blue" alt="Node">
+  <img src="https://img.shields.io/badge/python-3.8%2B-blue" alt="Python">
+   <img src="https://img.shields.io/badge/React-%3E%3D16.8-blue" alt="React">
+  <img src="https://img.shields.io/github/contributors/Team-410/MacroHub" alt="Contributors">
+</p>
+
+
 # 📦 MacroHub
 
 **Contributors:** Juho Järvinen, Makar Korostik, Jehu Enberg, Kaito Stenroos
 
 ## 🚀 Tech Stack
-- **Frontend:** React
-- **Backend:** Python Script / Flask App
+- **Frontend:** React, Vite
+- **Backend:** Node
+- **Local client** Python, Inno installer
 - **Database:** MySQL
 
 ---
 
-## 📋 Usage Guide
+## 📋 Developer Usage Guide
 
 ### 🐍 PYTHON CLIENT
 ```bash
@@ -27,13 +43,31 @@ python .\main.py
 OPTIONAL(no login): python .\create_macro.py 
 ```
 
-### ⚙️ BACKEND
+### ⚙️ INSTALLER
+```bash
+# Step 0: Download inno compiler
+
+# Step 1: cd ./client
+
+# Step 2: Create exe file pyinstaller --onedir --noconsole --name Macrohub main.py
+
+# Step 3: Navigate to the installer directory
+cd ./client/installer
+
+# Step 4: Choose the correct path to ouput dir
+
+# Step 5: Choose the correct paths to all sources
+
+# Step 6: Press run
+
+```
+
+### 🛢️ BACKEND
 ```bash
 # Step 0: Navigate to the backend directory
 cd ./web/app/backend/
 
-# Step 1: (Optional) Create authenticator.js if not available
-# Step 2: Start the backend server
+# Step 1: Start the backend server
 node server.js
 ```
 
@@ -42,7 +76,9 @@ node server.js
 # Step 0: Navigate to the frontend directory
 cd ./web/app/
 
-# Step 1: Run the development server
+# Step 2: npm install
+
+# Step 3: Run the development server
 npm run dev
 ```
 
