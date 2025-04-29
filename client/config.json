@@ -1,6 +1,6 @@
 
 {
-    "API_BASE_URL": "http://localhost:5000",
+    "API_BASE_URL": "https://macrohub-backend-6-3-25-macrohub.2.rahtiapp.fi",
     "PLACEHOLDER_URL_LOCAL": "http://localhost:5000",
     "PLACEHOLDER_URL_PROD": "https://macrohub-backend-6-3-25-macrohub.2.rahtiapp.fi"
     

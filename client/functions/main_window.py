@@ -113,7 +113,7 @@ class MainWindow:
     def update_persistent_keys(self, new_keys):
         """Update persistent keys displayed in the main window."""
         self.persistent_keys = new_keys
-        self.persistent_keys_label.config(text=f"Persistent Keys: {', '.join(self.persistent_keys) if self.persistent_keys else 'None'}")
+        self.persistent_keys_label.configure(text=f"Persistent Keys: {', '.join(self.persistent_keys) if self.persistent_keys else 'None'}")
 
     def open_advanced_settings(self):
         """Opens the Advanced Settings window."""
