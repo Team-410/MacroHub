@@ -38,7 +38,7 @@ OPTIONAL(no login): python .\create_macro.py
 
 # Step 1: cd ./client
 
-# Step 2: Create exe file pyinstaller --onedir --name Macrohub main.py
+# Step 2: Create exe file pyinstaller --onedir --noconsole --name Macrohub main.py
 
 # Step 3: Navigate to the installer directory
 cd ./client/installer
