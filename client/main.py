@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import json
 import os
+import ctypes
 from tkinter import messagebox
 from api_requests.login import login
 from pages.personal_list import show_personal_macros
